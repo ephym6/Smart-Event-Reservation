@@ -1,0 +1,139 @@
+# ===========================
+# PHP / Composer
+# ===========================
+/vendor/
+composer.phar
+
+# ===========================
+# Runtime, cache, logs, build outputs
+# ===========================
+*.log
+/cache/
+/logs/
+/tmp/
+/temp/
+/build/
+/coverage/
+/reports/
+/var/cache/
+/var/log/
+/var/sessions/
+
+# ===========================
+# PHPUnit
+# ===========================
+.phpunit.result.cache
+.phpunit.cache/
+phpunit.result.cache
+/phpunit.xml          # keep phpunit.xml.dist in VCS
+
+# ===========================
+# Coding standards / linters (cache files)
+# ===========================
+.php-cs-fixer.cache
+.php_cs.cache
+/.php-cs-fixer.cache
+/.php_cs.cache
+
+# ===========================
+# Static analysis (cache and local state)
+# ===========================
+/.phpstan
+/.phpstan-cache
+/phpstan.cache
+/.phan/
+/.psalm
+/.psalm-cache
+/psalm.xml.cache
+
+# Mutation testing
+/.infection.cache
+/infection.log
+
+# ===========================
+# Environment files
+# ===========================
+.env
+.env.*
+!.env.example
+!.env.local.example
+!.env.dist
+
+# ===========================
+# IDEs / Editors
+# ===========================
+# PhpStorm / JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+.phpstorm.meta.php
+
+# VS Code
+.vscode/
+
+# NetBeans
+nbproject/
+
+# Eclipse
+.project
+.settings/
+.buildpath
+
+# General editor history
+.history/
+
+# ===========================
+# OS-specific junk
+# ===========================
+# macOS
+.DS_Store
+.AppleDouble
+.Icon?
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux / editors
+*~
+*.swp
+*.swo
+*.swn
+*.swx
+
+# Ignore sensitive config files
+
+# ===========================
+# Optional: Frontend (uncomment if applicable)
+# ===========================
+# node_modules/
+# npm-debug.log*
+# yarn-error.log*
+# .pnpm-debug.log*
+# dist/
+# public/build/
+
+# ===========================
+# Optional: Framework-specific (uncomment what you use)
+# ===========================
+# Laravel
+# /bootstrap/cache/
+# /storage/*
+# !/storage/*.gitignore
+# !/storage/app/public/.gitignore
+
+# Symfony
+# /var/
+# !/var/.gitkeep
+
+# CakePHP
+# /tmp/
+# /logs/
+
+# CodeIgniter
+# /writable/*
+# !/writable/index.html
