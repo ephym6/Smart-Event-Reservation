@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,34 +52,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Reserve Venue - Smart Event Reservation</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="reserve-page">
 <div class="container">
   <h2>Reserve a Venue</h2>
+
   <?php if ($errors): ?>
-    <div style="background: rgba(255,0,0,0.08); padding:10px; border-radius:8px; margin-bottom:10px;">
-      <?php foreach($errors as $e) echo '<div>' . htmlspecialchars($e) . '</div>'; ?>
-    </div>
+    <div class="msg-error"><?php foreach($errors as $e) echo '<div>' . htmlspecialchars($e) . '</div>'; ?></div>
   <?php endif; ?>
   <?php if ($success): ?>
-    <div style="background: rgba(0,255,0,0.06); padding:10px; border-radius:8px; margin-bottom:10px;"><?= htmlspecialchars($success) ?></div>
+    <div class="msg-success"><?= htmlspecialchars($success) ?></div>
   <?php endif; ?>
+
   <form method="POST">
     <label>Venue</label>
-    <select name="venue_id">
+    <select name="venue_id" required>
       <option value="">-- choose --</option>
       <?php foreach($venues as $v): ?>
-        <option value="<?= $v['venue_id'] ?>"><?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - $<?= $v['price_per_hour'] ?>/hr</option>
+        <option value="<?= $v['venue_id'] ?>"><?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - $<?= number_format($v['price_per_hour'],2) ?>/hr</option>
       <?php endforeach; ?>
     </select>
 
-    <label>Start (YYYY-MM-DD HH:MM)</label>
-    <input type="text" name="start_time" placeholder="2025-12-31 14:00" value="<?= htmlspecialchars($_POST['start_time'] ?? '') ?>">
+    <label>Start</label>
+    <input type="datetime-local" name="start_time" value="<?= htmlspecialchars($_POST['start_time'] ?? '') ?>" required>
 
-    <label>End (YYYY-MM-DD HH:MM)</label>
-    <input type="text" name="end_time" placeholder="2025-12-31 18:00" value="<?= htmlspecialchars($_POST['end_time'] ?? '') ?>">
+    <label>End</label>
+    <input type="datetime-local" name="end_time" value="<?= htmlspecialchars($_POST['end_time'] ?? '') ?>" required>
 
     <button class="btn" type="submit">Reserve</button>
   </form>
+
   <p style="margin-top:12px;"><a href="dashboard.php" style="color:#ffb703;">Back to dashboard</a></p>
 </div>
 </body>

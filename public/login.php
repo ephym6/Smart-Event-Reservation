@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if (!$email || !$password) $errors[] = 'All fields required.';
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email format.';
+    if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email format.';
 
     if (empty($errors)) {
         $res = $auth->login($email, $password);
@@ -33,22 +33,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <title>Login - Smart Event Reservation</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/validation.js"></script>
+  <script src="js/validation.js" defer></script>
 </head>
-<body>
-<div class="container">
-  <h2>Login</h2>
-  <?php if ($errors): ?>
-    <div style="background: rgba(255,0,0,0.1); padding:10px; border-radius:8px; margin-bottom:15px;">
-      <?php foreach($errors as $e) echo '<div>' . htmlspecialchars($e) . '</div>'; ?>
+<body class="login-page">
+  <div class="container">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+
+      <?php if ($errors): ?>
+        <div class="msg-error">
+          <?php foreach($errors as $e) echo '<div>' . htmlspecialchars($e) . '</div>'; ?>
+        </div>
+      <?php endif; ?>
+
+      <form method="POST" onsubmit="return validateForm();" novalidate>
+        <input type="email" id="email" name="email" placeholder="Email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <button class="btn" type="submit">Send OTP & Login</button>
+      </form>
+
+      <p style="text-align:center; margin-top:12px;">
+        No account? <a href="register.php" style="color:#ffb703;">Register</a>
+      </p>
     </div>
-  <?php endif; ?>
-  <form method="POST" onsubmit="return validateForm();" novalidate>
-    <input type="email" id="email" name="email" placeholder="Email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
-    <input type="password" id="password" name="password" placeholder="Password">
-    <button class="btn" type="submit">Send OTP & Login</button>
-  </form>
-  <p style="text-align:center; margin-top:12px;">No account? <a href="register.php" style="color:#ffb703;">Register</a></p>
-</div>
+  </div>
 </body>
 </html>

@@ -5,12 +5,15 @@
   <title>Smart Event Reservation</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="dashboard-page">
   <div class="container">
     <h1>Welcome to Smart Event Reservation</h1>
-    <p>Book your venues, manage your events, and make reservations easily.</p>
-    <a href="login.php" style="color: #fff; text-decoration: underline;">Go to Login</a>
+    <p>Book venues, manage events, and make reservations easily.</p>
+    <div style="text-align:center; margin-top:18px;">
+      <a class="btn" href="register.php" style="display:inline-block; width:auto; padding:10px 18px; text-decoration:none;">Register</a>
+      <a class="btn" href="login.php" style="display:inline-block; width:auto; padding:10px 18px; text-decoration:none; margin-left:8px;">Login</a>
+      <a class="btn" href="venues.php" style="display:inline-block; width:auto; padding:10px 18px; text-decoration:none; margin-left:8px;">View Venues</a>
+    </div>
   </div>
 </body>
 </html>
-

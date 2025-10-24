@@ -1,72 +1,145 @@
+/* base / default background */
 body {
-  background: url('../img/background.jpg') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Poppins', sans-serif;
-  color: #fff;
   margin: 0;
   padding: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  min-height: 100vh;
+  background: url('../img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* dark overlay for readability */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* container sits above overlay */
 .container {
+  position: relative;
+  z-index: 2;
   width: 90%;
   max-width: 900px;
   margin: 80px auto;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.45);
   border-radius: 15px;
   padding: 30px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  color: #fff;
 }
 
-h1, h2, h3 {
-  text-align: center;
-  color: #ffb703;
+/* smaller centered card for auth pages */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.06);
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.5);
 }
+
+/* typography & buttons */
+h1, h2, h3 { text-align: center; color: #ffb703; margin: 0 0 14px; }
+p { color: rgba(255,255,255,0.9); }
 
 button, .btn {
-  background: linear-gradient(135deg, #ffb703, #fb8500);
+  background: linear-gradient(135deg,#ffb703,#fb8500);
   border: none;
   color: white;
   padding: 10px 20px;
   border-radius: 8px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: transform .18s ease, box-shadow .18s ease;
+  width: 100%;
 }
 
 button:hover, .btn:hover {
-  transform: scale(1.05);
-  background: linear-gradient(135deg, #fb8500, #ffb703);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.04);
 }
 
 .table th, .table td {
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.08);
   padding: 10px;
   text-align: left;
 }
 
-input, select {
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="datetime-local"],
+select {
   width: 100%;
-  padding: 10px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: none;
-  margin-bottom: 15px;
-}
-/* Page-specific backgrounds */
-body.login-page {
-  background: url('../img/bg-event.jpg') no-repeat center center fixed;
-  background-size: cover;
+  margin-bottom: 12px;
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  outline: none;
+  box-sizing: border-box;
 }
 
-body.venues-page {
+/* small error/info boxes */
+.msg-error {
+  background: rgba(255,0,0,0.08);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  color: #ffdede;
+}
+
+.msg-success {
+  background: rgba(0,255,0,0.06);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  color: #dfffe0;
+}
+
+/* ============================
+   Page-specific backgrounds
+   ============================ */
+body.login-page {
   background: url('../img/bg-login.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 
+body.venues-page {
+  background: url('../img/bg-event.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
 
+body.dashboard-page {
+  background: url('../img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.reserve-page {
+  background: url('../img/bg-event.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* small responsive tweaks */
+@media (max-width: 600px) {
+  .container { margin: 40px 12px; padding: 20px; }
+  .auth-card { padding: 18px; }
+}
