@@ -3,6 +3,7 @@
 # ===========================
 /vendor/
 composer.phar
+composer.lock
 
 # ===========================
 # Runtime, cache, logs, build outputs
@@ -105,7 +106,11 @@ $RECYCLE.BIN/
 *.swn
 *.swx
 
-# Ignore sensitive config files
+# ===========================
+# Sensitive config files
+# ===========================
+config/Database.php
+config/email.php
 
 # ===========================
 # Optional: Frontend (uncomment if applicable)
@@ -118,22 +123,18 @@ $RECYCLE.BIN/
 # public/build/
 
 # ===========================
-# Optional: Framework-specific (uncomment what you use)
+# Laravel directory (if not needed)
 # ===========================
-# Laravel
-# /bootstrap/cache/
-# /storage/*
-# !/storage/*.gitignore
-# !/storage/app/public/.gitignore
+/laravel/
 
-# Symfony
-# /var/
-# !/var/.gitkeep
+# ===========================
+# Uploaded files (if applicable)
+# ===========================
+/public/uploads/
+/public/images/uploads/
 
-# CakePHP
-# /tmp/
-# /logs/
-
-# CodeIgniter
-# /writable/*
-# !/writable/index.html
+# ===========================
+# Session files
+# ===========================
+/sessions/
+*.sess
