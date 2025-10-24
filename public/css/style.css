@@ -1,0 +1,72 @@
+body {
+  background: url('../img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 900px;
+  margin: 80px auto;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: #ffb703;
+}
+
+button, .btn {
+  background: linear-gradient(135deg, #ffb703, #fb8500);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover, .btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #fb8500, #ffb703);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.table th, .table td {
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px;
+  text-align: left;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+}
+/* Page-specific backgrounds */
+body.login-page {
+  background: url('../img/bg-event.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+body.venues-page {
+  background: url('../img/bg-login.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+
