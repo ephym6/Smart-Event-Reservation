@@ -13,6 +13,9 @@ $errors = [];
 $success = null;
 $user = $auth->currentUser();
 
+// Preselected venue via GET
+$preselect_venue_id = isset($_GET['venue_id']) ? intval($_GET['venue_id']) : 0;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $venue_id = intval($_POST['venue_id'] ?? 0);
     $start = trim($_POST['start_time'] ?? '');
@@ -67,8 +70,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label>Venue</label>
     <select name="venue_id" required>
       <option value="">-- choose --</option>
-      <?php foreach($venues as $v): ?>
-        <option value="<?= $v['venue_id'] ?>"><?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - $<?= number_format($v['price_per_hour'],2) ?>/hr</option>
+      <?php 
+        $selectedValue = $_POST['venue_id'] ?? $preselect_venue_id;
+        foreach($venues as $v): 
+          $sel = ($selectedValue && intval($selectedValue) === intval($v['venue_id'])) ? 'selected' : '';
+      ?>
+        <option value="<?= $v['venue_id'] ?>" <?= $sel ?>><?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - $<?= number_format($v['price_per_hour'],2) ?>/hr</option>
       <?php endforeach; ?>
     </select>
 

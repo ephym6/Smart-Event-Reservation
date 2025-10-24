@@ -13,10 +13,8 @@ $venues = $venue->getAll();
 <body class="venues-page">
   <div class="container">
     <h2>Available Venues</h2>
-    <p>Check out our event spaces and make a booking.</p>
-
     <table class="table" style="margin-top:12px;">
-      <tr><th>Venue</th><th>Description</th><th>Location</th><th>Capacity</th><th>Price/hr</th></tr>
+      <tr><th>Venue</th><th>Description</th><th>Location</th><th>Capacity</th><th>Price/hr</th><th></th></tr>
       <?php foreach($venues as $v): ?>
         <tr>
           <td><?= htmlspecialchars($v['venue_name']) ?></td>
@@ -24,11 +22,10 @@ $venues = $venue->getAll();
           <td><?= htmlspecialchars($v['location']) ?></td>
           <td><?= intval($v['capacity']) ?></td>
           <td>$<?= number_format($v['price_per_hour'],2) ?></td>
+          <td><a class="btn" href="reserve.php?venue_id=<?= $v['venue_id'] ?>">Book</a></td>
         </tr>
       <?php endforeach; ?>
     </table>
-
-    <p style="margin-top:12px;"><a href="index.php" style="color:#ffb703;">Back to Home</a></p>
   </div>
 </body>
 </html>

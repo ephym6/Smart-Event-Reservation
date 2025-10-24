@@ -11,6 +11,10 @@ class Reservation {
     }
 
     public function create($user_id, $venue_id, $start_time, $end_time, $total_cost) {
+        // Convert to proper DATETIME format
+        $start = date('Y-m-d H:i:s', strtotime($start_time));
+        $end = date('Y-m-d H:i:s', strtotime($end_time));
+
         $sql = "INSERT INTO {$this->table} 
                 (user_id, venue_id, start_time, end_time, total_cost)
                 VALUES (:uid, :vid, :start, :end, :cost)";
@@ -18,8 +22,8 @@ class Reservation {
         return $stmt->execute([
             ':uid' => $user_id,
             ':vid' => $venue_id,
-            ':start' => $start_time,
-            ':end' => $end_time,
+            ':start' => $start,
+            ':end' => $end,
             ':cost' => $total_cost
         ]);
     }
