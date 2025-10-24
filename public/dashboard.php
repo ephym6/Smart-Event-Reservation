@@ -22,6 +22,7 @@ $reservations = $res->getUserReservations($user['user_id']);
   <div style="display:flex; gap:10px; justify-content:center; margin-bottom:18px;">
     <a href="reserve.php" class="btn" style="width:auto;">Reserve a Venue</a>
     <a href="venues.php" class="btn" style="width:auto;">Browse Venues</a>
+    <a href="users.php" class="btn" style="width:auto;">View Users</a>
     <a href="logout.php" class="btn" style="width:auto;">Logout</a>
   </div>
 
