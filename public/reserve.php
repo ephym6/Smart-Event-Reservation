@@ -69,13 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <form method="POST">
     <label>Venue</label>
     <select name="venue_id" required>
-      <option value="">-- choose --</option>
+      <option style="color: #ffb703; background-color: black" value="">-- choose --</option>
       <?php 
         $selectedValue = $_POST['venue_id'] ?? $preselect_venue_id;
         foreach($venues as $v): 
           $sel = ($selectedValue && intval($selectedValue) === intval($v['venue_id'])) ? 'selected' : '';
       ?>
-        <option value="<?= $v['venue_id'] ?>" <?= $sel ?>><?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - $<?= number_format($v['price_per_hour'],2) ?>/hr</option>
+        <option style="color: #ffb703; background-color: black" value="<?= $v['venue_id'] ?>" <?= $sel ?>><?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - $<?= number_format($v['price_per_hour'],2) ?>/hr</option>
       <?php endforeach; ?>
     </select>
 
