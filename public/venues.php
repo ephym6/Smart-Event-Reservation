@@ -21,7 +21,7 @@ $venues = $venue->getAll();
           <td><?= htmlspecialchars($v['description']) ?></td>
           <td><?= htmlspecialchars($v['location']) ?></td>
           <td><?= intval($v['capacity']) ?></td>
-          <td>$<?= number_format($v['price_per_hour'],2) ?></td>
+          <td>Ksh.<?= number_format($v['price_per_hour'],2) ?></td>
           <td><a class="btn" href="reserve.php?venue_id=<?= $v['venue_id'] ?>">Book</a></td>
         </tr>
       <?php endforeach; ?>

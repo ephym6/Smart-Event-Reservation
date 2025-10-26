@@ -12,8 +12,6 @@
     <div style="text-align:center; margin-top:18px;">
       <a class="btn" href="register.php" style="display:inline-block; width:auto; padding:10px 18px; text-decoration:none;">Register</a>
       <a class="btn" href="login.php" style="display:inline-block; width:auto; padding:10px 18px; text-decoration:none; margin-left:8px;">Login</a>
-      <a class="btn" href="venues.php" style="display:inline-block; width:auto; padding:10px 18px; text-decoration:none; margin-left:8px;">View Venues</a>
-      <a class="btn" href="users.php" style="display:inline-block; width:auto; padding:10px 18px; text-decoration:none; margin-left:8px;">View Users</a>
     </div>
   </div>
 </body>
