@@ -210,10 +210,21 @@ CREATE TABLE `venues` (
 --
 
 INSERT INTO `venues` (`venue_id`, `venue_name`, `description`, `capacity`, `location`, `price_per_hour`, `status`, `created_at`, `updated_at`) VALUES
+INSERT INTO `venues` (`venue_id`, `venue_name`, `description`, `capacity`, `location`, `price_per_hour`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'Grand Ballroom', 'Perfect for weddings and large corporate events.', 300, 'Nairobi CBD', 1200.00, 'available', '2025-10-24 17:37:25', '2025-10-24 17:37:25'),
 (2, 'Garden Terrace', 'Outdoor venue with natural lighting and garden view.', 150, 'Karen, Nairobi', 800.00, 'available', '2025-10-24 17:37:25', '2025-10-24 17:37:25'),
 (3, 'Executive Hall', 'Modern hall suited for conferences and meetings.', 200, 'Westlands, Nairobi', 1000.00, 'available', '2025-10-24 17:37:25', '2025-10-24 17:37:25'),
-(4, 'Sunset Lounge', 'Cozy space ideal for small gatherings and parties.', 80, 'Lavington, Nairobi', 600.00, 'available', '2025-10-24 17:37:25', '2025-10-24 17:37:25');
+(4, 'Sunset Lounge', 'Cozy space ideal for small gatherings and parties.', 80, 'Lavington, Nairobi', 600.00, 'available', '2025-10-24 17:37:25', '2025-10-24 17:37:25'),
+(5, 'Royal Conference Center', 'Premium space equipped with modern sound and projection systems.', 400, 'Upper Hill, Nairobi', 150000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
+(6, 'Skyline Rooftop', 'Beautiful open-air venue with a city skyline view. Ideal for parties and launches.', 120, 'Westlands, Nairobi', 95000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
+(7, 'Lakeview Pavilion', 'Scenic venue near the lake, perfect for weddings and receptions.', 250, 'Naivasha', 130000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
+(8, 'Tech Hub Hall', 'High-tech seminar hall with fast internet and presentation gear.', 180, 'Thika Road, Nairobi', 85000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
+(9, 'Cultural Dome', 'Unique venue for concerts and cultural showcases with stage and lighting.', 700, 'Ngong Road, Nairobi', 200000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
+(10, 'Royal Conference Center', 'Premium space equipped with modern sound and projection systems.', 400, 'Upper Hill, Nairobi', 150000.00, 'available', '2025-10-26 19:56:45', '2025-10-26 19:56:45'),
+(11, 'Skyline Rooftop', 'Beautiful open-air venue with a city skyline view. Ideal for parties and launches.', 120, 'Westlands, Nairobi', 95000.00, 'available', '2025-10-26 19:56:45', '2025-10-26 19:56:45'),
+(12, 'Lakeview Pavilion', 'Scenic venue near the lake, perfect for weddings and receptions.', 250, 'Naivasha', 130000.00, 'available', '2025-10-26 19:56:45', '2025-10-26 19:56:45'),
+(13, 'Tech Hub Hall', 'High-tech seminar hall with fast internet and presentation gear.', 180, 'Thika Road, Nairobi', 85000.00, 'available', '2025-10-26 19:56:45', '2025-10-26 19:56:45'),
+(14, 'Cultural Dome', 'Unique venue for concerts and cultural showcases with stage and lighting.', 700, 'Ngong Road, Nairobi', 200000.00, 'available', '2025-10-26 19:56:45', '2025-10-26 19:56:45');
 
 --
 -- Indexes for dumped tables
