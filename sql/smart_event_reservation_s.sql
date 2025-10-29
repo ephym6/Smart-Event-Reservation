@@ -219,11 +219,11 @@ INSERT INTO `venues` (`venue_id`, `venue_name`, `description`, `capacity`, `loca
 (7, 'Lakeview Pavilion', 'Scenic venue near the lake, perfect for weddings and receptions.', 250, 'Naivasha', 130000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
 (8, 'Tech Hub Hall', 'High-tech seminar hall with fast internet and presentation gear.', 180, 'Thika Road, Nairobi', 85000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
 (9, 'Cultural Dome', 'Unique venue for concerts and cultural showcases with stage and lighting.', 700, 'Ngong Road, Nairobi', 200000.00, 'available', '2025-10-26 19:55:42', '2025-10-26 19:55:42'),
-(15, 'Riverside Swimming Complex', 'Large pool complex with lanes and event seating — ideal for aquatic shows & competitions.', 250, 'Riverside, Nairobi', 90000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
-(16, 'Artisan Gallery & Hall', 'Contemporary art gallery with adaptable hall space for launches, exhibitions and small performances.', 120, 'Kilimani, Nairobi', 70000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
-(17, 'Innovation Lab Auditorium', 'Tech-ready auditorium with AV systems and fast internet — built for workshops and product launches.', 220, 'Riverside Drive, Nairobi', 110000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
-(18, 'Heritage Open-Air Arena', 'Spacious outdoor arena suited for festivals, concerts and cultural events.', 2000, 'Ngong Hills, Nairobi', 250000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
-(19, 'Intimate Studio Room', 'Small studio perfect for private rehearsals, recordings and intimate gatherings.', 35, 'Kileleshwa, Nairobi', 15000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58');
+(10, 'Riverside Swimming Complex', 'Large pool complex with lanes and event seating — ideal for aquatic shows & competitions.', 250, 'Riverside, Nairobi', 90000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
+(11, 'Artisan Gallery & Hall', 'Contemporary art gallery with adaptable hall space for launches, exhibitions and small performances.', 120, 'Kilimani, Nairobi', 70000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
+(12, 'Innovation Lab Auditorium', 'Tech-ready auditorium with AV systems and fast internet — built for workshops and product launches.', 220, 'Riverside Drive, Nairobi', 110000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
+(13, 'Heritage Open-Air Arena', 'Spacious outdoor arena suited for festivals, concerts and cultural events.', 2000, 'Ngong Hills, Nairobi', 250000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58'),
+(14, 'Intimate Studio Room', 'Small studio perfect for private rehearsals, recordings and intimate gatherings.', 35, 'Kileleshwa, Nairobi', 15000.00, 'available', '2025-10-26 20:25:58', '2025-10-26 20:25:58');
 
 --
 -- Indexes for dumped tables
