@@ -1,24 +1,31 @@
 <?php
+// public/login.php
 require_once __DIR__ . '/../classes/Auth.php';
 $auth = new Auth();
 
+// If already fully logged in, go to dashboard
 if ($auth->isLoggedIn()) {
     header('Location: dashboard.php');
     exit;
 }
 
 $errors = [];
+$info = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (!$email || !$password) $errors[] = 'All fields required.';
-    if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email format.';
+    if (!$email || !$password) {
+        $errors[] = 'All fields required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Invalid email format.';
+    }
 
     if (empty($errors)) {
         $res = $auth->login($email, $password);
         if ($res['success']) {
+            // show info on verify page
             header('Location: verify.php');
             exit;
         } else {
@@ -44,6 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="msg-error">
           <?php foreach($errors as $e) echo '<div>' . htmlspecialchars($e) . '</div>'; ?>
         </div>
+      <?php endif; ?>
+
+      <?php if ($info): ?>
+        <div class="msg-success"><?= htmlspecialchars($info) ?></div>
       <?php endif; ?>
 
       <form method="POST" onsubmit="return validateForm();" novalidate>

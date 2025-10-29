@@ -38,7 +38,7 @@ $reservations = $res->getUserReservations($user['user_id']);
           <td><?= htmlspecialchars($r['start_time']) ?></td>
           <td><?= htmlspecialchars($r['end_time']) ?></td>
           <td><?= htmlspecialchars($r['status']) ?></td>
-          <td>$<?= number_format($r['total_cost'], 2) ?></td>
+          <td>Ksh. <?= number_format($r['total_cost'], 2) ?></td>
         </tr>
       <?php endforeach; ?>
     <?php endif; ?>

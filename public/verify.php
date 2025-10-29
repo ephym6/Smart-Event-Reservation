@@ -1,74 +1,44 @@
 <?php
+// public/verify.php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../classes/Auth.php';
-
 $auth = new Auth();
+
 $errors = [];
 $info = null;
 
-$pendingId = $_SESSION['pending_user_id'] ?? null;
-$sentTo = $_SESSION['otp_sent_to'] ?? null;
-$fallbackLogged = $_SESSION['otp_fallback_logged'] ?? false;
-
-// If already logged in, go to dashboard
+// If already logged in, redirect
 if ($auth->isLoggedIn()) {
     header('Location: dashboard.php');
     exit;
 }
 
-// Info about OTP status
+$pendingId = $_SESSION['pending_user_id'] ?? null;
+$sentTo = $_SESSION['otp_sent_to'] ?? null;
+$fallbackLogged = $_SESSION['otp_fallback_logged'] ?? false;
+
 if ($sentTo) {
+    // only show: "A verification code was sent to <email>."
     $info = 'A verification code was sent to ' . htmlspecialchars($sentTo) . '.';
     if ($fallbackLogged) $info .= ' (Email failed to send; OTP written to storage/otp-log.txt for dev testing.)';
-    // don't clear here; let user see it
 }
 
-// Process verify submission
+// handle verification submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['otp'])) {
     $entered = trim($_POST['otp'] ?? '');
-    if (!$entered) $errors[] = 'Enter the code.';
-    if (empty($errors)) {
-        // If Auth has verifyOTP, use it
-        if (method_exists($auth, 'verifyOTP')) {
-            $res = $auth->verifyOTP($pendingId, $entered);
-            if ($res['success']) {
-                header('Location: dashboard.php');
-                exit;
-            } else {
-                $errors[] = $res['message'] ?? 'Verification failed.';
-            }
+    if (!$entered) {
+        $errors[] = 'Enter the code.';
+    } else {
+        $res = $auth->verifyOTP($pendingId, $entered);
+        if ($res['success']) {
+            header('Location: dashboard.php');
+            exit;
         } else {
-            // manual verify: compare to stored otp_hash in DB
-            $db = new Database();
-            $conn = $db->connect();
-            $stmt = $conn->prepare("SELECT otp_hash, otp_expires FROM users WHERE user_id = :uid LIMIT 1");
-            $stmt->execute([':uid' => $pendingId]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$row || !$row['otp_hash']) {
-                $errors[] = 'No OTP found. Request a new code.';
-            } else {
-                if ($row['otp_expires'] && strtotime($row['otp_expires']) < time()) {
-                    $errors[] = 'Code expired. Please request a new code.';
-                } elseif (!password_verify((string)$entered, $row['otp_hash'])) {
-                    $errors[] = 'Invalid code.';
-                } else {
-                    // mark verified
-                    $upd = $conn->prepare("UPDATE users SET is_verified = 1, otp_hash = NULL, otp_expires = NULL WHERE user_id = :uid");
-                    $upd->execute([':uid' => $pendingId]);
-                    // log user in
-                    $_SESSION['user_id'] = $pendingId;
-                    unset($_SESSION['pending_user_id'], $_SESSION['otp_sent_to'], $_SESSION['otp_fallback_logged']);
-                    header('Location: dashboard.php');
-                    exit;
-                }
-            }
+            $errors[] = $res['message'] ?? 'Verification failed.';
         }
     }
 }
-
-// Show fallback note: if email failed, developer can find OTP in storage/otp-log.txt
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,8 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['otp'])) {
         <button class="btn" type="submit">Verify</button>
       </form>
 
-      <form method="POST" style="margin-top:10px;">
-        <button class="btn" name="resend" type="submit" formaction="resend.php">Resend Code</button>
+      <form method="POST" action="resend.php" style="margin-top:10px;">
+        <button class="btn" name="resend" type="submit">Resend Code</button>
       </form>
 
       <p style="margin-top:10px;"><a href="login.php" style="color:#ffb703;">Back to login</a></p>

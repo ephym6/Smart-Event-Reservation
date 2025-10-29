@@ -89,7 +89,7 @@ $imageMap = [
 </head>
 <body>
   <div class="container">
-    <a href="dashboard.php" class="back-btn">← Back to Dashboard</a>
+    <a href="dashboard.php" class="back-btn">← Back to dashboard</a>
     <h2>Available Venues</h2>
 
     <?php if (!empty($venues)): ?>

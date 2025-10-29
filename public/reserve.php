@@ -23,8 +23,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$venue_id || !$start || !$end) $errors[] = 'All fields are required.';
 
+    // Validate date/time format
+    if (strtotime($start) === false || strtotime($end) === false) {
+        $errors[] = 'Invalid dates.';
+    } else {
+        // 🧩 Prevent booking past dates
+        $currentDateTime = date('Y-m-d H:i');
+        if ($start < $currentDateTime) {
+            echo "<script>alert('You cannot book a past date or time.'); window.history.back();</script>";
+            exit;
+        }
+    }
+
     // basic validation: start < end
-    if (strtotime($start) === false || strtotime($end) === false) $errors[] = 'Invalid dates.';
     if (empty($errors) && strtotime($start) >= strtotime($end)) $errors[] = 'Start must be before end.';
 
     // calculate hours and cost
@@ -39,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $resModel = new Reservation();
                 $ok = $resModel->create($user['user_id'], $venue_id, $start, $end, $total);
                 if ($ok) {
-                    $success = 'Reservation created. Total cost: $' . number_format($total,2);
+                    $success = 'Reservation created. Total cost: Ksh.' . number_format($total, 2);
                 } else {
                     $errors[] = 'Failed to create reservation.';
                 }
@@ -75,20 +86,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach($venues as $v): 
           $sel = ($selectedValue && intval($selectedValue) === intval($v['venue_id'])) ? 'selected' : '';
       ?>
-        <option style="color: #ffb703; background-color: black" value="<?= $v['venue_id'] ?>" <?= $sel ?>><?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - $<?= number_format($v['price_per_hour'],2) ?>/hr</option>
+        <option style="color: #ffb703; background-color: black" value="<?= $v['venue_id'] ?>" <?= $sel ?>>
+          <?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - Ksh.<?= number_format($v['price_per_hour'], 2) ?>/hr
+        </option>
       <?php endforeach; ?>
     </select>
 
     <label>Start</label>
-    <input type="datetime-local" name="start_time" value="<?= htmlspecialchars($_POST['start_time'] ?? '') ?>" required>
+    <input type="datetime-local" name="start_time" id="start_time" min="<?= date('Y-m-d\TH:i') ?>" value="<?= htmlspecialchars($_POST['start_time'] ?? '') ?>" required>
 
     <label>End</label>
-    <input type="datetime-local" name="end_time" value="<?= htmlspecialchars($_POST['end_time'] ?? '') ?>" required>
+    <input type="datetime-local" name="end_time" id="end_time" min="<?= date('Y-m-d\TH:i') ?>" value="<?= htmlspecialchars($_POST['end_time'] ?? '') ?>" required>
 
     <button class="btn" type="submit">Reserve</button>
   </form>
 
   <p style="margin-top:12px;"><a href="dashboard.php" style="color:#ffb703;">Back to dashboard</a></p>
 </div>
+
+<script>
+  // 🧩 Instant feedback for past date selection
+  document.getElementById('start_time').addEventListener('change', function() {
+    const selected = new Date(this.value);
+    const now = new Date();
+    if (selected < now) {
+      alert('You cannot select a past start time.');
+      this.value = '';
+    }
+  });
+</script>
+
 </body>
 </html>
