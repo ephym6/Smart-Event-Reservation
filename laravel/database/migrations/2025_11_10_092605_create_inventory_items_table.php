@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('inventory_items', function (Blueprint $table) {
             $table->id('item_id');
-            $table->foreignId('venue_id')->nullable()->constrained('venues')->onDelete('cascade');
+            $table->unsignedBigInteger('venue_id')->nullable();
+            $table
+                ->foreign('venue_id')
+                ->references('venue_id')
+                ->on('venues')
+                ->onDelete('cascade');
             $table->string('item_name', 100);
             $table->integer('quantity_available')->default(0);
             $table->timestamps();
+            $table->engine = 'InnoDB';
         });
     }
 

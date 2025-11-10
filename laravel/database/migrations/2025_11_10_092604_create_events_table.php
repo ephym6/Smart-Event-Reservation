@@ -14,11 +14,16 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id('event_id');
             $table->string('event_name');
-            $table->foreignId('venue_id')->nullable()->constrained('venues')->onDelete('cascade');
+            $table->unsignedBigInteger('venue_id')->nullable();
+            $table->foreign('venue_id')
+                ->references('venue_id')
+                ->on('venues')
+                ->onDelete('cascade');
             $table->date('event_date')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->text('description')->nullable();
+            $table->engine = 'InnoDB';
         });
     }
 

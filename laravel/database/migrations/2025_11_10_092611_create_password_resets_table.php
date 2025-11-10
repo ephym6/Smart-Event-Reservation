@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('password_resets', function (Blueprint $table) {
             $table->id('reset_id');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table
+                ->foreign('user_id')
+                ->references('user_id')
+                ->on('users')
+                ->onDelete('cascade');
             $table->string('otp_code', 10);
             $table->dateTime('expires_at')->nullable();
             $table->boolean('is_used')->default(false);
+            $table->engine = 'InnoDB';
         });
     }
 
