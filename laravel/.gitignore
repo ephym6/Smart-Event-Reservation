@@ -1,0 +1,85 @@
+#---------------------------------------------------
+# Laravel Project .gitignore
+#---------------------------------------------------
+
+# Environment files
+.env
+.env.*
+.env.backup
+.env.production
+auth.json
+
+# Laravel specific
+/vendor/
+node_modules/
+public/build/
+public/hot/
+public/storage/
+storage/*.key
+storage/pail/
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+storage/framework/testing/
+
+# Keep necessary storage directories
+!storage/app/
+!storage/app/public/
+!storage/framework/
+!storage/framework/cache/
+!storage/framework/sessions/
+!storage/framework/views/
+!storage/logs/
+
+# Cache & result files
+.phpunit.result.cache
+.php-cs-fixer.cache
+.phpunit.cache/
+.phpactor.json
+
+# Compiled assets
+/public/mix-manifest.json
+/public/css/
+!/public/css/.gitkeep
+/public/js/
+!/public/js/.gitkeep
+/public/vendor
+
+# Homestead & deployment
+Homestead.yaml
+Homestead.json
+
+# IDE & Editor directories
+/.idea/
+/.vscode/
+/.fleet/
+/.zed/
+/.nova/
+
+# Logs & temporary files
+*.log
+*.cache
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
+
+# System files
+.DS_Store
+Thumbs.db
+
+# NPM & Yarn logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+
+# Testing & Coverage
+coverage/
+.phpunit.result.cache
+
+# Misc
+composer.lock
