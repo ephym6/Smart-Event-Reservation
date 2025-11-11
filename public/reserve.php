@@ -46,14 +46,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hours = (strtotime($end) - strtotime($start)) / 3600;
             if ($hours <= 0) $errors[] = 'Duration must be positive.';
             else {
-                $total = floatval($venue['price_per_hour']) * $hours;
-                $resModel = new Reservation();
-                $ok = $resModel->create($user['user_id'], $venue_id, $start, $end, $total);
-                if ($ok) {
-                    $success = 'Reservation created. Total cost: Ksh.' . number_format($total, 2);
-                } else {
-                    $errors[] = 'Failed to create reservation.';
-                }
+        $total = floatval($venue['price_per_hour']) * $hours;
+        $resModel = new Reservation();
+        try {
+          $ok = $resModel->create($user['user_id'], $venue_id, $start, $end, $total);
+          if ($ok) {
+            $success = 'Reservation created. Total cost: Ksh.' . number_format($total, 2);
+          } else {
+            // create returned falsy without exception
+            $errors[] = 'Failed to create reservation.';
+          }
+        } catch (PDOException $e) {
+          // Trigger in DB signals overlap with SQLSTATE '45000' or includes specific message
+          $errMsg = $e->getMessage();
+          if (stripos($errMsg, 'overlaps') !== false || $e->getCode() === '45000') {
+            $errors[] = 'The selected time overlaps with an existing booking for this venue.';
+          } else {
+            error_log('Reservation create error: ' . $e->getMessage());
+            $errors[] = 'Failed to create reservation due to a server error.';
+          }
+        } catch (Exception $e) {
+          // Fallback for any other exception
+          error_log('Reservation create unexpected error: ' . $e->getMessage());
+          $errors[] = 'Failed to create reservation due to a server error.';
+        }
             }
         }
     }

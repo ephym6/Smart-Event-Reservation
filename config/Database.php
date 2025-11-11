@@ -3,7 +3,7 @@ class Database {
     private $host = '127.0.0.1';
     private $db_name = 'smart_event_reservation';
     private $username = 'root';
-    private $password = 'Quodra_4s';
+    private $password = 'Kijolp05!';
     public $conn;
 
     public function connect() {
