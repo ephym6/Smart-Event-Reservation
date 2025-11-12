@@ -11,11 +11,27 @@ class VenueController extends Controller
     public function index()
     {
         $date = request('date');
+        $location = request('location');
+        $guests = request('guests');
+
         $start = $date ? Carbon::parse($date)->startOfDay() : now()->startOfDay();
         $end = $date ? Carbon::parse($date)->endOfDay() : now()->endOfDay();
 
+        $query = Venue::query();
+
+        if ($location) {
+            $query->where(function ($q) use ($location) {
+                $q->where('location', 'like', "%{$location}%")
+                  ->orWhere('venue_name', 'like', "%{$location}%");
+            });
+        }
+
+        if ($guests) {
+            $query->where('capacity', '>=', (int) $guests);
+        }
+
         // Count reservations overlapping the selected day (pending/approved)
-        $venues = Venue::withCount([
+        $venues = $query->withCount([
             'reservations as active_reservations_count' => function ($q) use ($start, $end) {
                 $q->whereIn('status', ['pending', 'approved'])
                   ->where(function ($q2) use ($start, $end) {
@@ -29,7 +45,7 @@ class VenueController extends Controller
             return response()->json($venues);
         }
         
-        return view('venues.index', compact('venues', 'date'));
+        return view('venues.index', compact('venues', 'date', 'location', 'guests'));
     }
 
     public function show($id)
