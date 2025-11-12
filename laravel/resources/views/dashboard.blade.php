@@ -52,6 +52,19 @@
         </div>
     </div>
 
+    <div class="mt-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold">Reports</h2>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.reports.index') }}" class="rounded-md bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700 text-sm">Open Reports</a>
+                <a href="{{ route('admin.reports.export.csv', ['dataset' => 'users']) }}" class="rounded-md bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200 text-sm">Users CSV</a>
+                <a href="{{ route('admin.reports.export.csv', ['dataset' => 'reservations']) }}" class="rounded-md bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200 text-sm">Reservations CSV</a>
+                <a href="{{ route('admin.reports.export.pdf') }}" class="rounded-md bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200 text-sm">PDF</a>
+            </div>
+        </div>
+        <p class="mt-2 text-sm text-slate-600">Filter, download and print full reports of users and reservations.</p>
+    </div>
+
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 class="text-lg font-semibold mb-3">Reserved Venues Today</h2>
