@@ -277,3 +277,43 @@ Booking a reservation:
 - Email notifications on approval/decline
 - Paginate long lists (venues, events, reservations)
 - Add tests for reservation overlap logic
+
+---
+
+## Recent updates
+
+### Authentication and registration
+- Registration form now includes Account type (user/manager/admin) and saves role to users.role.
+- Post-register redirect: users -> Home, admin/manager -> Dashboard.
+- Admin login route at `/admin/login` remains; login requires role in [admin, manager].
+- Dashboard route updated to controller: GET `/dashboard` -> AdminController@dashboard (injects required stats).
+
+### Admin approvals
+- Approve/decline pending reservations from Dashboard:
+  - POST `/admin/reservations/{id}/approve` -> status `approved`
+  - POST `/admin/reservations/{id}/decline` -> status `cancelled`
+- Users see updated status on their Reservations page.
+
+### Availability and listing rules
+- Events index shows only available events (no pending/approved reservations attached).
+- Venues index shows only available venues for the selected day (no overlapping bookings for that date).
+- Reserve on Venues page routes to venue details `#reserve` with optional `?date=YYYY-MM-DD` preserved.
+
+### Booking logic
+- Duration-based reservations: users can provide End time or Duration (hours). If Duration is given, End is computed.
+- Price is computed server-side as `venue.price_per_hour * duration_hours` (fractional hours supported).
+- Prevent past bookings: `start_time` must be in the future (validated server-side and constrained client-side with `min`).
+- Overlap prevention remains authoritative: no double booking for the same venue/time range.
+
+### Capacity enforcement and UX
+- Guests cannot exceed venue capacity:
+  - Backend validation returns an error if guests > capacity.
+  - UI hints and client-side validation: the guests input shows a red border/glow and an inline error when exceeding capacity, and uses the `max` attribute.
+
+### Form UX enhancements
+- Both Event and Venue booking forms:
+  - Auto-calculate Duration when Start/End changes, and auto-suggest End when Duration changes.
+  - Show a live Estimated total and computed Duration before submission.
+
+### Success flow
+- After creating a reservation, users see a success page and auto-redirect back to Venues with the reservation date so the venue correctly appears as unavailable for that time.
