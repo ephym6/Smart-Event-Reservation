@@ -111,3 +111,8 @@ Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.
 // ---------------- ADMIN RESERVATION ACTIONS ----------------
 Route::post('/admin/reservations/{id}/approve', [ReservationController::class, 'approve'])->name('admin.reservations.approve');
 Route::post('/admin/reservations/{id}/decline', [ReservationController::class, 'decline'])->name('admin.reservations.decline');
+
+// ---------------- ADMIN REPORTS ----------------
+Route::get('/admin/reports', [\App\Http\Controllers\AdminReportController::class, 'index'])->name('admin.reports.index');
+Route::get('/admin/reports/export/csv', [\App\Http\Controllers\AdminReportController::class, 'exportCsv'])->name('admin.reports.export.csv');
+Route::get('/admin/reports/export/pdf', [\App\Http\Controllers\AdminReportController::class, 'exportPdf'])->name('admin.reports.export.pdf');
