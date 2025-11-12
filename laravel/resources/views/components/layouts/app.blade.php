@@ -15,9 +15,21 @@
         </a>
         <nav class="hidden md:flex items-center gap-6">
             <a href="{{ route('home') }}" class="hover:text-blue-600">Home</a>
-            <a href="#" class="hover:text-blue-600">Venues</a>
-            <a href="#" class="hover:text-blue-600">Login</a>
-            <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Dashboard</a>
+            <a href="{{ route('venues.index') }}" class="hover:text-blue-600">Venues</a>
+            <a href="{{ route('events.index') }}" class="hover:text-blue-600">Events</a>
+            <a href="{{ route('reservations.index') }}" class="hover:text-blue-600">Reservations</a>
+            @auth
+                <a href="{{ route('dashboard') }}" class="hover:text-blue-600">Dashboard</a>
+                <form action="{{ route('logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button class="text-red-600 hover:text-red-700">Logout</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="text-blue-600 hover:text-blue-700">Login</a>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700">Sign Up</a>
+                @endif
+            @endauth
         </nav>
         <button class="md:hidden inline-flex items-center p-2 rounded hover:bg-slate-100" aria-label="Open Menu">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6"><path d="M3.75 6.75h16.5m-16.5 5.25h16.5m-16.5 5.25h16.5"/></svg>

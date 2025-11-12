@@ -8,6 +8,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationItemController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 
 // Home page
@@ -94,20 +95,9 @@ Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('
 // ---------------- DASHBOARD ----------------
 Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-// ---------------- AUTH (minimal placeholders) ----------------
-Route::view('/login', 'auth.login')->name('login');
-Route::post('/login', function (Request $request) {
-    // Placeholder only; replace with real auth.
-    return back()->with('success', 'Logged in (stub)');
-});
-
-Route::view('/register', 'auth.register')->name('register');
-Route::post('/register', function (Request $request) {
-    // Placeholder only; replace with real registration.
-    return redirect()->route('home')->with('success', 'Registered (stub)');
-});
-
-Route::post('/logout', function () {
-    // Placeholder only; replace with real logout.
-    return redirect()->route('home');
-})->name('logout');
+// ---------------- AUTH ----------------
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
