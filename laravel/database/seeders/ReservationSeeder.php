@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * Placeholder: Seeds example reservations linking users, venues, and events.
+ *
+ * Implement after authentication/booking flows are in place so constraints are clear.
+ */
 class ReservationSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        // Intentionally left for a later milestone.
     }
 }

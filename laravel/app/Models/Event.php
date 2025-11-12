@@ -13,6 +13,8 @@ class Event extends Model
 
     protected $primaryKey = 'event_id'; // custom primary key
 
+    public $timestamps = false; // events table does not have created_at/updated_at
+
     protected $fillable = [
         'event_name',
         'venue_id',
