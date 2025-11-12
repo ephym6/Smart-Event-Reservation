@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -22,14 +24,46 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $credentials['email'])->first();
-        if (! $user || ! Hash::check($credentials['password'], $user->password_hash)) {
-            return back()->withErrors(['email' => 'The provided credentials are incorrect.'])->withInput();
+
+        // If user does not exist, create a basic account on-the-fly (auto signup on first login)
+        if (! $user) {
+            $generatedName = Str::of($credentials['email'])->before('@')->headline();
+            $user = User::create([
+                'name' => (string) $generatedName,
+                'email' => $credentials['email'],
+                'password_hash' => Hash::make($credentials['password']),
+                'role' => 'user',
+                'is_verified' => true,
+            ]);
+        } else {
+            // Validate password for existing users
+            if (! Hash::check($credentials['password'], $user->password_hash)) {
+                return back()->withErrors(['email' => 'The provided credentials are incorrect.'])->withInput();
+            }
+        }
+
+        // Optional: persist last login metadata if columns exist
+        $dirty = false;
+        if (Schema::hasColumn('users', 'last_login_at')) {
+            $user->last_login_at = now();
+            $dirty = true;
+        }
+        if (Schema::hasColumn('users', 'last_login_ip')) {
+            $user->last_login_ip = $request->ip();
+            $dirty = true;
+        }
+        if (Schema::hasColumn('users', 'last_login_user_agent')) {
+            $user->last_login_user_agent = (string) $request->userAgent();
+            $dirty = true;
+        }
+        if ($dirty) {
+            $user->save();
         }
 
         Auth::login($user, (bool) $request->boolean('remember'));
         $request->session()->regenerate();
 
-        // Role-based redirect
+        // After login redirect
         $default = in_array($user->role, ['admin', 'manager']) ? route('dashboard') : route('home');
         return redirect()->intended($default);
     }
