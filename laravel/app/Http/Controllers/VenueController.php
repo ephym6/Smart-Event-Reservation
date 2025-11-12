@@ -39,7 +39,10 @@ class VenueController extends Controller
                          ->where('end_time', '>=', $start);
                   });
             }
-        ])->get();
+        ])
+        // Match events page logic: list only items that are currently available
+        ->having('active_reservations_count', '=', 0)
+        ->get();
         
         if (request()->wantsJson()) {
             return response()->json($venues);

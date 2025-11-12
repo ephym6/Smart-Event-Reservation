@@ -18,9 +18,6 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse(($venues ?? collect()) as $venue)
-            @php
-                $reserved = ($venue->active_reservations_count ?? 0) > 0 || ($venue->status ?? 'available') !== 'available';
-            @endphp
             <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition">
                 <div class="flex items-start justify-between">
                     <div>
@@ -34,18 +31,14 @@
                             Capacity: {{ $venue->capacity ?? '—' }}
                         </p>
                     </div>
-                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium {{ $reserved ? 'bg-slate-100 text-slate-700' : 'bg-green-100 text-green-700' }}">
-                        {{ $reserved ? 'Reserved' : 'Available' }}
+                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700">
+                        Available
                     </span>
                 </div>
                 <div class="mt-4 flex items-center justify-between">
                     <a href="{{ route('venues.show', $venue->venue_id) }}" class="text-blue-600 hover:text-blue-700 text-sm">View details</a>
-                    @if($reserved)
-                        <button class="inline-flex items-center rounded-md bg-slate-200 px-3 py-1.5 text-sm text-slate-600 cursor-not-allowed" disabled>Reserve</button>
-                    @else
-                        <a href="{{ route('venues.show', $venue->venue_id) }}#reserve{{ $date ? '?date='.$date : '' }}"
-                           class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-1.5 text-sm font-medium text-white shadow hover:shadow-md hover:from-blue-700 hover:to-blue-800">Reserve</a>
-                    @endif
+<a href="{{ route('venues.show', $venue->venue_id) }}{{ $date ? '?date='.$date : '' }}#reserve"
+                       class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-1.5 text-sm font-medium text-white shadow hover:shadow-md hover:from-blue-700 hover:to-blue-800">Reserve</a>
                 </div>
             </div>
         @empty
