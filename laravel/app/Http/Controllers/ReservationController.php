@@ -47,7 +47,7 @@ class ReservationController extends Controller
         $data = $request->validate([
             'venue_id' => 'required|exists:venues,venue_id',
             'event_id' => 'nullable|exists:events,event_id',
-            'start_time' => 'required|date',
+            'start_time' => 'required|date|after_or_equal:now',
             'end_time' => 'nullable|date|after:start_time',
             'duration_hours' => 'nullable|numeric|min:0.5|max:48',
             'status' => 'nullable|in:pending,approved,cancelled,completed',

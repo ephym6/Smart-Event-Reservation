@@ -55,12 +55,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="start_time" class="block text-sm font-medium text-slate-700">Start</label>
-                            <input id="start_time" name="start_time" type="datetime-local" required value="{{ old('start_time', request('date') ? request('date').'T10:00' : '') }}"
+<input id="start_time" name="start_time" type="datetime-local" required value="{{ old('start_time', request('date') ? request('date').'T10:00' : '') }}" min="{{ now()->format('Y-m-d\TH:i') }}"
                                    class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
                         </div>
                         <div>
                             <label for="end_time" class="block text-sm font-medium text-slate-700">End (or leave empty and set Duration)</label>
-                            <input id="end_time" name="end_time" type="datetime-local" value="{{ old('end_time', request('date') ? request('date').'T12:00' : '') }}"
+<input id="end_time" name="end_time" type="datetime-local" value="{{ old('end_time', request('date') ? request('date').'T12:00' : '') }}" min="{{ now()->format('Y-m-d\TH:i') }}"
                                    class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
                         </div>
                     </div>
@@ -79,6 +79,10 @@
                         </div>
                     </div>
 
+                    <div class="text-sm text-slate-600">
+                        Estimated: <span id="est-cost">—</span> · Duration: <span id="est-duration">—</span> hrs
+                    </div>
+
                     <div class="flex items-center justify-end gap-3">
                         <a href="{{ route('venues.index') }}" class="text-slate-600 hover:text-slate-800">Cancel</a>
                         <button type="submit" class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-white shadow hover:shadow-md hover:from-blue-700 hover:to-blue-800">Reserve</button>
@@ -87,4 +91,51 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startEl = document.getElementById('start_time');
+            const endEl = document.getElementById('end_time');
+            const durEl = document.getElementById('duration_hours');
+            const estCost = document.getElementById('est-cost');
+            const estDur = document.getElementById('est-duration');
+            const rate = parseFloat("{{ (float)($venue->price_per_hour ?? 0) }}");
+
+            function toDate(v){ return v ? new Date(v) : null; }
+            function minsDiff(a,b){ return Math.max(0, Math.round((b - a) / 60000)); }
+
+            function updateMinConstraints(){
+                if (startEl.value) { endEl.min = startEl.value; }
+            }
+
+            function compute() {
+                const s = toDate(startEl.value);
+                const e = toDate(endEl.value);
+                let hours = 0;
+                if (s && e && e > s) {
+                    const mins = minsDiff(s,e);
+                    hours = (mins/60);
+                    if (durEl) durEl.value = (Math.round(hours*100)/100).toFixed(2);
+                } else if (s && durEl && durEl.value) {
+                    const mins = Math.max(0, Math.round(parseFloat(durEl.value)*60));
+                    const d = new Date(s.getTime() + mins*60000);
+                    endEl.value = d.toISOString().slice(0,16);
+                    hours = mins/60;
+                }
+                estDur.textContent = hours ? hours.toFixed(2) : '—';
+                estCost.textContent = (hours && rate) ? ('KSh ' + (hours*rate).toFixed(2)) : 'KSh 0.00';
+            }
+
+            ['change','input'].forEach(evt => {
+                startEl.addEventListener(evt, () => { updateMinConstraints(); compute(); });
+                endEl.addEventListener(evt, compute);
+                if (durEl) durEl.addEventListener(evt, compute);
+            });
+
+            updateMinConstraints();
+            compute();
+        });
+    </script>
+    @endpush
 @endsection
