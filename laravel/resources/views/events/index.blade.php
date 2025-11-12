@@ -3,57 +3,43 @@
 @section('title', 'Events')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Events</h1>
-    <a href="{{ route('events.create') }}" class="btn btn-primary">Add New Event</a>
-</div>
-
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold tracking-tight">Events</h1>
+        @if (auth()->check() && in_array(auth()->user()->role, ['admin','manager']) && Route::has('events.create'))
+            <a href="{{ route('events.create') }}" class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-white shadow hover:shadow-md hover:from-blue-700 hover:to-blue-800">Add Event</a>
+        @endif
     </div>
-@endif
 
-<div class="card">
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+            <thead class="bg-slate-50">
                 <tr>
-                    <th>ID</th>
-                    <th>Event Name</th>
-                    <th>Venue</th>
-                    <th>Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Actions</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Event</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Start</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">End</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Venue</th>
+                    <th class="px-4 py-3"></th>
                 </tr>
             </thead>
-            <tbody>
-                @forelse($events as $event)
-                <tr>
-                    <td>{{ $event->event_id }}</td>
-                    <td>{{ $event->event_name }}</td>
-                    <td>{{ $event->venue->venue_name ?? 'No venue' }}</td>
-                    <td>{{ $event->event_date ? $event->event_date->format('M d, Y') : 'N/A' }}</td>
-                    <td>{{ $event->start_time ?? 'N/A' }}</td>
-                    <td>{{ $event->end_time ?? 'N/A' }}</td>
-                    <td>
-                        <a href="{{ route('events.edit', $event->event_id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('events.destroy', $event->event_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
+            <tbody class="divide-y divide-slate-200 bg-white">
+                @forelse(($events ?? collect()) as $event)
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-3 text-sm text-slate-800">{{ $event->event_name }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-700">{{ $event->event_date ? $event->event_date->format('M d, Y') : 'TBD' }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-700">{{ $event->start_time ?? '—' }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-700">{{ $event->end_time ?? '—' }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-700">{{ $event->venue->venue_name ?? '—' }}</td>
+                        <td class="px-4 py-3 text-right text-sm">
+                            <a href="{{ route('events.show', $event->event_id) }}#reserve" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700">Reserve</a>
+                        </td>
+                    </tr>
                 @empty
-                <tr>
-                    <td colspan="7" class="text-center">No events found</td>
-                </tr>
+                    <tr>
+                        <td colspan="6" class="px-4 py-6 text-center text-slate-500">No events found.</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-</div>
 @endsection

@@ -67,9 +67,20 @@ class ReservationController extends Controller
             return response()->json($reservation, 201);
         }
         
-        return redirect()->route('reservations.index')->with('success', 'Reservation created successfully');
+        return redirect()->route('reservations.success', $reservation->reservation_id);
     }
 
+    public function success($id)
+    {
+        $reservation = Reservation::with(['venue','event','user'])->findOrFail($id);
+        
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Reservation successful', 'reservation' => $reservation]);
+        }
+        
+        return view('reservations.success', compact('reservation'));
+    }
+}
     public function update(Request $request, $id)
     {
         $reservation = Reservation::findOrFail($id);

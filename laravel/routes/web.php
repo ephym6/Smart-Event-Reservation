@@ -91,6 +91,7 @@ Route::delete('/reservation-items/{id}', [ReservationItemController::class, 'des
 Route::get('/venues/{id}', [VenueController::class, 'show'])->name('venues.show');
 Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
+Route::get('/reservations/{id}/success', [ReservationController::class, 'success'])->name('reservations.success');
 
 // ---------------- DASHBOARD ----------------
 Route::view('/dashboard', 'dashboard')->name('dashboard');
