@@ -9,13 +9,24 @@ class VenueController extends Controller
 {
     public function index()
     {
-        return response()->json(Venue::all());
+        $venues = Venue::all();
+        
+        if (request()->wantsJson()) {
+            return response()->json($venues);
+        }
+        
+        return view('venues.index', compact('venues'));
     }
 
     public function show($id)
     {
         $venue = Venue::with('events')->findOrFail($id);
-        return response()->json($venue);
+        
+        if (request()->wantsJson()) {
+            return response()->json($venue);
+        }
+        
+        return view('venues.show', compact('venue'));
     }
 
     public function store(Request $request)
@@ -30,19 +41,34 @@ class VenueController extends Controller
         ]);
 
         $venue = Venue::create($data);
-        return response()->json($venue, 201);
+        
+        if (request()->wantsJson()) {
+            return response()->json($venue, 201);
+        }
+        
+        return redirect()->route('venues.index')->with('success', 'Venue created successfully');
     }
 
     public function update(Request $request, $id)
     {
         $venue = Venue::findOrFail($id);
         $venue->update($request->all());
-        return response()->json($venue);
+        
+        if (request()->wantsJson()) {
+            return response()->json($venue);
+        }
+        
+        return redirect()->route('venues.index')->with('success', 'Venue updated successfully');
     }
 
     public function destroy($id)
     {
         Venue::destroy($id);
-        return response()->json(['message' => 'Venue deleted']);
+        
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Venue deleted']);
+        }
+        
+        return redirect()->route('venues.index')->with('success', 'Venue deleted successfully');
     }
 }

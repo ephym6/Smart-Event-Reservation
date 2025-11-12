@@ -9,13 +9,24 @@ class EventController extends Controller
 {
     public function index()
     {
-        return response()->json(Event::with('venue')->get());
+        $events = Event::with('venue')->get();
+        
+        if (request()->wantsJson()) {
+            return response()->json($events);
+        }
+        
+        return view('events.index', compact('events'));
     }
 
     public function show($id)
     {
         $event = Event::with('venue')->findOrFail($id);
-        return response()->json($event);
+        
+        if (request()->wantsJson()) {
+            return response()->json($event);
+        }
+        
+        return view('events.show', compact('event'));
     }
 
     public function store(Request $request)
@@ -30,19 +41,34 @@ class EventController extends Controller
         ]);
 
         $event = Event::create($data);
-        return response()->json($event, 201);
+        
+        if (request()->wantsJson()) {
+            return response()->json($event, 201);
+        }
+        
+        return redirect()->route('events.index')->with('success', 'Event created successfully');
     }
 
     public function update(Request $request, $id)
     {
         $event = Event::findOrFail($id);
         $event->update($request->all());
-        return response()->json($event);
+        
+        if (request()->wantsJson()) {
+            return response()->json($event);
+        }
+        
+        return redirect()->route('events.index')->with('success', 'Event updated successfully');
     }
 
     public function destroy($id)
     {
         Event::destroy($id);
-        return response()->json(['message' => 'Event deleted']);
+        
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Event deleted']);
+        }
+        
+        return redirect()->route('events.index')->with('success', 'Event deleted successfully');
     }
 }

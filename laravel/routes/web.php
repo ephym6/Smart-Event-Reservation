@@ -1,17 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VenueController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationItemController;
+use Illuminate\Http\Request;
 
 // Home page
-Route::get('/', function () {
-    return view('welcome');
-});
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ---------------- USERS ----------------
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -84,3 +85,29 @@ Route::get('/reservation-items/{id}/edit', function ($id) {
 })->name('reservation_items.edit');
 Route::put('/reservation-items/{id}', [ReservationItemController::class, 'update'])->name('reservation_items.update');
 Route::delete('/reservation-items/{id}', [ReservationItemController::class, 'destroy'])->name('reservation_items.destroy');
+
+// ---------------- SHOW ROUTES (detail pages) ----------------
+Route::get('/venues/{id}', [VenueController::class, 'show'])->name('venues.show');
+Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
+Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
+
+// ---------------- DASHBOARD ----------------
+Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+// ---------------- AUTH (minimal placeholders) ----------------
+Route::view('/login', 'auth.login')->name('login');
+Route::post('/login', function (Request $request) {
+    // Placeholder only; replace with real auth.
+    return back()->with('success', 'Logged in (stub)');
+});
+
+Route::view('/register', 'auth.register')->name('register');
+Route::post('/register', function (Request $request) {
+    // Placeholder only; replace with real registration.
+    return redirect()->route('home')->with('success', 'Registered (stub)');
+});
+
+Route::post('/logout', function () {
+    // Placeholder only; replace with real logout.
+    return redirect()->route('home');
+})->name('logout');

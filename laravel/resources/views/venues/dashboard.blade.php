@@ -46,19 +46,19 @@
                 ['name' => 'Tech Hub Conference Center', 'date' => 'Jan 12, 2026', 'time' => '9:00 AM', 'type' => 'Conference', 'status' => 'Pending'],
                 ['name' => 'Garden Pavilion', 'date' => 'Feb 05, 2026', 'time' => '1:00 PM', 'type' => 'Birthday', 'status' => 'Confirmed'],
             ] as $b)
-            <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <p class="font-semibold text-slate-900">{{ $b['name'] }}</p>
-                        <p class="text-sm text-slate-600">{{ $b['date'] }} · {{ $b['time'] }}</p>
-                        <p class="mt-1 text-sm text-slate-700">{{ $b['type'] }}</p>
+                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="font-semibold text-slate-900">{{ $b['name'] }}</p>
+                            <p class="text-sm text-slate-600">{{ $b['date'] }} · {{ $b['time'] }}</p>
+                            <p class="mt-1 text-sm text-slate-700">{{ $b['type'] }}</p>
+                        </div>
+                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium {{ $b['status'] === 'Confirmed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">{{ $b['status'] }}</span>
                     </div>
-                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium {{ $b['status'] === 'Confirmed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }}">{{ $b['status'] }}</span>
+                    <div class="mt-4">
+                        <a href="#" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">View Details</a>
+                    </div>
                 </div>
-                <div class="mt-4">
-                    <a href="#" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">View Details</a>
-                </div>
-            </div>
             @endforeach
         </div>
     </section>

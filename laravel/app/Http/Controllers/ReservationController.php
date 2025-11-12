@@ -9,15 +9,24 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        return response()->json(
-            Reservation::with(['user', 'venue', 'event', 'items'])->get()
-        );
+        $reservations = Reservation::with(['user', 'venue', 'event'])->get();
+        
+        if (request()->wantsJson()) {
+            return response()->json($reservations);
+        }
+        
+        return view('reservations.index', compact('reservations'));
     }
 
     public function show($id)
     {
-        $reservation = Reservation::with(['user', 'venue', 'event', 'items'])->findOrFail($id);
-        return response()->json($reservation);
+        $reservation = Reservation::with(['user', 'venue', 'event', 'reservationItems'])->findOrFail($id);
+        
+        if (request()->wantsJson()) {
+            return response()->json($reservation);
+        }
+        
+        return view('reservations.show', compact('reservation'));
     }
 
     public function store(Request $request)
@@ -33,19 +42,34 @@ class ReservationController extends Controller
         ]);
 
         $reservation = Reservation::create($data);
-        return response()->json($reservation, 201);
+        
+        if (request()->wantsJson()) {
+            return response()->json($reservation, 201);
+        }
+        
+        return redirect()->route('reservations.index')->with('success', 'Reservation created successfully');
     }
 
     public function update(Request $request, $id)
     {
         $reservation = Reservation::findOrFail($id);
         $reservation->update($request->all());
-        return response()->json($reservation);
+        
+        if (request()->wantsJson()) {
+            return response()->json($reservation);
+        }
+        
+        return redirect()->route('reservations.index')->with('success', 'Reservation updated successfully');
     }
 
     public function destroy($id)
     {
         Reservation::destroy($id);
-        return response()->json(['message' => 'Reservation deleted']);
+        
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Reservation deleted']);
+        }
+        
+        return redirect()->route('reservations.index')->with('success', 'Reservation deleted successfully');
     }
 }

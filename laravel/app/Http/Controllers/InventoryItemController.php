@@ -9,7 +9,13 @@ class InventoryItemController extends Controller
 {
     public function index()
     {
-        return response()->json(InventoryItem::with('venue')->get());
+        $items = InventoryItem::with('venue')->get();
+        
+        if (request()->wantsJson()) {
+            return response()->json($items);
+        }
+        
+        return view('inventory.index', compact('items'));
     }
 
     public function show($id)
@@ -27,19 +33,34 @@ class InventoryItemController extends Controller
         ]);
 
         $item = InventoryItem::create($data);
-        return response()->json($item, 201);
+        
+        if (request()->wantsJson()) {
+            return response()->json($item, 201);
+        }
+        
+        return redirect()->route('inventory.index')->with('success', 'Item created successfully');
     }
 
     public function update(Request $request, $id)
     {
         $item = InventoryItem::findOrFail($id);
         $item->update($request->all());
-        return response()->json($item);
+        
+        if (request()->wantsJson()) {
+            return response()->json($item);
+        }
+        
+        return redirect()->route('inventory.index')->with('success', 'Item updated successfully');
     }
 
     public function destroy($id)
     {
         InventoryItem::destroy($id);
-        return response()->json(['message' => 'Item deleted']);
+        
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Item deleted']);
+        }
+        
+        return redirect()->route('inventory.index')->with('success', 'Item deleted successfully');
     }
 }

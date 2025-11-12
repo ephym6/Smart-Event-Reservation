@@ -1,43 +1,55 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Smart Event Reservation' }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Smart Event Reservation')</title>
+    <!-- CSS frameworks -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+    @vite()
+    @stack('styles')
 </head>
-<body class="min-h-full text-slate-800">
-<header class="bg-white border-b border-slate-200">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <span class="inline-block h-8 w-8 rounded bg-blue-600"></span>
-            <span class="font-semibold text-lg">Smart Event Reservation</span>
-        </a>
-        <nav class="hidden md:flex items-center gap-6">
-            <a href="{{ route('home') }}" class="hover:text-blue-600">Home</a>
-            <a href="#" class="hover:text-blue-600">Venues</a>
-            <a href="#" class="hover:text-blue-600">Login</a>
-            <a href="{{ route('dashboard') }}" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Dashboard</a>
-        </nav>
-        <button class="md:hidden inline-flex items-center p-2 rounded hover:bg-slate-100" aria-label="Open Menu">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6"><path d="M3.75 6.75h16.5m-16.5 5.25h16.5m-16.5 5.25h16.5"/></svg>
-        </button>
-    </div>
-</header>
+<body class="bg-gray-50 font-sans text-gray-900">
 
-<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-    {{ $slot }}
-</main>
-
-<footer class="mt-16 border-t border-slate-200 bg-white">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p>© {{ date('Y') }} Smart Event Reservation</p>
-        <div class="flex items-center gap-6">
-            <a href="#" class="hover:text-slate-700">Privacy</a>
-            <a href="#" class="hover:text-slate-700">Terms</a>
-            <a href="#" class="hover:text-slate-700">Contact</a>
+{{-- Navigation --}}
+<nav class="bg-white shadow-sm border-bottom border-gray-200">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center" style="height: 64px;">
+            <div class="d-flex align-items-center">
+                <a href="{{ route('home') }}" class="text-decoration-none fw-bold text-primary">Smart Event Reservation</a>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('venues.index') }}" class="text-decoration-none text-dark">Venues</a>
+                <a href="{{ route('events.index') }}" class="text-decoration-none text-dark">Events</a>
+                <a href="{{ route('reservations.index') }}" class="text-decoration-none text-dark">Reservations</a>
+                @auth
+                    <a href="{{ route('logout') }}" class="text-decoration-none text-danger">Logout</a>
+                @else
+                    <a href="{{ route('login') }}" class="text-decoration-none text-primary">Login</a>
+                    <a href="{{ route('register') }}" class="text-decoration-none text-primary">Sign Up</a>
+                @endauth
+            </div>
         </div>
     </div>
+</nav>
+
+{{-- Main Content --}}
+<main class="py-4">
+    <div class="container">
+        @yield('content')
+    </div>
+</main>
+
+{{-- Footer --}}
+<footer class="bg-white border-top border-gray-200 mt-5 py-3">
+    <div class="container text-center text-muted small">
+        &copy; {{ date('Y') }} Smart Event Reservation. All rights reserved.
+    </div>
 </footer>
+
+<!-- JS (for Bootstrap components like dismissible alerts) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+@stack('scripts')
 </body>
 </html>
