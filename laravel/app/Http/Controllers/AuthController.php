@@ -16,6 +16,11 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function showAdminLoginForm()
+    {
+        return view('auth.admin-login');
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -93,6 +98,24 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return redirect()->route('home')->with('success', 'Welcome, '.$user->name.'!');
+    }
+
+    public function adminLogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = User::where('email', $credentials['email'])->first();
+        if (! $user || ! in_array($user->role, ['admin', 'manager']) || ! Hash::check($credentials['password'], $user->password_hash)) {
+            return back()->withErrors(['email' => 'Invalid admin credentials.'])->withInput();
+        }
+
+        Auth::login($user, (bool) $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard'));
     }
 
     public function logout(Request $request)

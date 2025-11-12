@@ -95,9 +95,13 @@ Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('
 // ---------------- DASHBOARD ----------------
 Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-// ---------------- AUTH ----------------
+// ---------------- AUTH (USER) ----------------
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ---------------- AUTH (ADMIN) ----------------
+Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.post');

@@ -4,18 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Venue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class VenueController extends Controller
 {
     public function index()
     {
-        $venues = Venue::all();
+        $date = request('date');
+        $start = $date ? Carbon::parse($date)->startOfDay() : now()->startOfDay();
+        $end = $date ? Carbon::parse($date)->endOfDay() : now()->endOfDay();
+
+        // Count reservations overlapping the selected day (pending/approved)
+        $venues = Venue::withCount([
+            'reservations as active_reservations_count' => function ($q) use ($start, $end) {
+                $q->whereIn('status', ['pending', 'approved'])
+                  ->where(function ($q2) use ($start, $end) {
+                      $q2->where('start_time', '<=', $end)
+                         ->where('end_time', '>=', $start);
+                  });
+            }
+        ])->get();
         
         if (request()->wantsJson()) {
             return response()->json($venues);
         }
         
-        return view('venues.index', compact('venues'));
+        return view('venues.index', compact('venues', 'date'));
     }
 
     public function show($id)
