@@ -95,7 +95,7 @@ Registration `/register`:
   - admin/manager -> dashboard
 
 Login behavior:
-- User login auto-creates a basic user if email doesn’t exist (optional bootstrap feature)
+- User login signs in a basic user already added after registration to database
 - Auth::login + session regeneration
 - Role-based redirect: admin/manager -> `/dashboard`, user -> `/`
 
