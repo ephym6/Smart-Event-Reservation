@@ -10,7 +10,13 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        $reservations = Reservation::with(['user', 'venue', 'event'])->get();
+        $query = Reservation::with(['user', 'venue', 'event']);
+
+        if (auth()->check() && in_array(auth()->user()->role, ['admin','manager'])) {
+            $reservations = $query->get();
+        } else {
+            $reservations = $query->where('user_id', auth()->id())->get();
+        }
         
         if (request()->wantsJson()) {
             return response()->json($reservations);
@@ -80,7 +86,7 @@ class ReservationController extends Controller
         
         return view('reservations.success', compact('reservation'));
     }
-}
+
     public function update(Request $request, $id)
     {
         $reservation = Reservation::findOrFail($id);

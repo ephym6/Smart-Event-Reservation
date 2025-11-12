@@ -43,7 +43,7 @@
                     @if($reserved)
                         <button class="inline-flex items-center rounded-md bg-slate-200 px-3 py-1.5 text-sm text-slate-600 cursor-not-allowed" disabled>Reserve</button>
                     @else
-                        <a href="{{ route('reservations.create') }}?venue_id={{ $venue->venue_id }}{{ $date ? '&date='.$date : '' }}"
+                        <a href="{{ route('venues.show', $venue->venue_id) }}#reserve{{ $date ? '?date='.$date : '' }}"
                            class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-1.5 text-sm font-medium text-white shadow hover:shadow-md hover:from-blue-700 hover:to-blue-800">Reserve</a>
                     @endif
                 </div>

@@ -3,65 +3,64 @@
 @section('title', 'Reservations')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Reservations</h1>
-    <a href="{{ route('reservations.create') }}" class="btn btn-primary">Add New Reservation</a>
-</div>
-
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">{{ (auth()->check() && !in_array(auth()->user()->role, ['admin','manager'])) ? 'My Reservations' : 'Reservations' }}</h1>
+        @if (auth()->check() && in_array(auth()->user()->role, ['admin','manager']) && Route::has('reservations.create'))
+            <a href="{{ route('reservations.create') }}" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">New Reservation</a>
+        @endif
     </div>
-@endif
 
-<div class="card">
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
+    @if(session('success'))
+        <div class="mb-4 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-blue-800">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+            <thead class="bg-slate-50">
                 <tr>
-                    <th>ID</th>
-                    <th>User</th>
-                    <th>Venue</th>
-                    <th>Event</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Status</th>
-                    <th>Total Cost</th>
-                    <th>Actions</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">ID</th>
+                    @if (auth()->check() && in_array(auth()->user()->role, ['admin','manager']))
+                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">User</th>
+                    @endif
+                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Venue</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Event</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Start</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">End</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Total</th>
+                    <th class="px-4 py-2"></th>
                 </tr>
             </thead>
-            <tbody>
-                @forelse($reservations as $reservation)
-                <tr>
-                    <td>{{ $reservation->reservation_id }}</td>
-                    <td>{{ $reservation->user->name ?? 'N/A' }}</td>
-                    <td>{{ $reservation->venue->venue_name ?? 'N/A' }}</td>
-                    <td>{{ $reservation->event->event_name ?? 'N/A' }}</td>
-                    <td>{{ $reservation->start_time ? $reservation->start_time->format('M d, Y H:i') : 'N/A' }}</td>
-                    <td>{{ $reservation->end_time ? $reservation->end_time->format('M d, Y H:i') : 'N/A' }}</td>
-                    <td>
-                        <span class="badge bg-{{ $reservation->status === 'approved' ? 'success' : ($reservation->status === 'pending' ? 'warning' : 'secondary') }}">
-                            {{ ucfirst($reservation->status ?? 'pending') }}
-                        </span>
-                    </td>
-                    <td>${{ number_format($reservation->total_cost ?? 0, 2) }}</td>
-                    <td>
-                        <a href="{{ route('reservations.edit', $reservation->reservation_id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <form action="{{ route('reservations.destroy', $reservation->reservation_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
+            <tbody class="divide-y divide-slate-200 bg-white">
+                @forelse ($reservations as $r)
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2 text-sm text-slate-700">{{ $r->reservation_id }}</td>
+                        @if (auth()->check() && in_array(auth()->user()->role, ['admin','manager']))
+                            <td class="px-4 py-2 text-sm text-slate-700">{{ $r->user->name ?? '—' }}</td>
+                        @endif
+                        <td class="px-4 py-2 text-sm text-slate-700">{{ $r->venue->venue_name ?? '—' }}</td>
+                        <td class="px-4 py-2 text-sm text-slate-700">{{ $r->event->event_name ?? '—' }}</td>
+                        <td class="px-4 py-2 text-sm text-slate-700">{{ optional($r->start_time)->format('M d, Y H:i') }}</td>
+                        <td class="px-4 py-2 text-sm text-slate-700">{{ optional($r->end_time)->format('M d, Y H:i') }}</td>
+                        <td class="px-4 py-2 text-sm">
+                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
+                                {{ ($r->status ?? 'pending') === 'approved' ? 'bg-green-100 text-green-700' : (($r->status ?? 'pending') === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-700') }}">
+                                {{ ucfirst($r->status ?? 'pending') }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-2 text-sm text-slate-700">KSh {{ number_format($r->total_cost ?? 0, 2) }}</td>
+                        <td class="px-4 py-2 text-right">
+                            <a href="{{ route('reservations.show', $r->reservation_id) }}" class="text-blue-600 hover:text-blue-700 text-sm">View</a>
+                        </td>
+                    </tr>
                 @empty
-                <tr>
-                    <td colspan="9" class="text-center">No reservations found</td>
-                </tr>
+                    <tr>
+                        <td colspan="9" class="px-4 py-6 text-center text-slate-500">No reservations found</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-</div>
 @endsection
