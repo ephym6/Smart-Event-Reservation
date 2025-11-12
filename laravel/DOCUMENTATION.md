@@ -152,6 +152,17 @@ Logout: POST `/logout` -> invalidate session + token
   - Supplies `$venuesCount`, `$reservationsCount`, `$reservedVenues` (today), `$recentReservations`
   - View: `resources/views/dashboard.blade.php` with Approve/Decline actions
 
+### AdminReportController
+- `index()`
+  - Role-gated
+  - Loads Users and Reservations (with user, venue, event) and optional date range filters (start/end)
+  - View: `resources/views/admin/reports/index.blade.php` (tables + filter + download buttons)
+- `exportCsv()`
+  - Streams CSV for users or reservations based on `?dataset=users|reservations`
+- `exportPdf()`
+  - Generates a PDF via barryvdh/laravel-dompdf if installed
+  - Falls back to a printable HTML view `resources/views/admin/reports/pdf.blade.php`
+
 ---
 
 ## Routes map (selected)
@@ -170,6 +181,11 @@ Auth (users):
 Auth (admin):
 - GET `/admin/login` -> admin login (name: admin.login)
 - POST `/admin/login` -> admin login.post
+
+Admin reports:
+- GET `/admin/reports` -> AdminReportController@index (name: admin.reports.index)
+- GET `/admin/reports/export/csv?dataset=users|reservations` -> AdminReportController@exportCsv (name: admin.reports.export.csv)
+- GET `/admin/reports/export/pdf` -> AdminReportController@exportPdf (name: admin.reports.export.pdf)
 
 Admin reservation actions:
 - POST `/admin/reservations/{id}/approve` -> ReservationController@approve (name: admin.reservations.approve)
@@ -225,6 +241,9 @@ Pages:
   - Register (`auth/register.blade.php`) with Account type
 - Dashboard (`dashboard.blade.php`)
   - KPIs, reserved venues today, recent reservations with Approve/Decline actions
+- Admin Reports (`admin/reports/index.blade.php`)
+  - Filter by date, download Users/Reservations as CSV, download PDF or print
+  - Printable/PDF view: `admin/reports/pdf.blade.php`
 
 ---
 
@@ -293,6 +312,12 @@ Booking a reservation:
   - POST `/admin/reservations/{id}/approve` -> status `approved`
   - POST `/admin/reservations/{id}/decline` -> status `cancelled`
 - Users see updated status on their Reservations page.
+
+### Admin reports
+- New report screen at `/admin/reports` with:
+  - Date range filter for reservations
+  - CSV export: Users and Reservations datasets
+  - PDF export (requires barryvdh/laravel-dompdf; otherwise printable HTML with a Print button)
 
 ### Availability and listing rules
 - Events index shows only available events (no pending/approved reservations attached).
