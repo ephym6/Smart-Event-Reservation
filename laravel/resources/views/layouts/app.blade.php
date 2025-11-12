@@ -28,8 +28,10 @@
                         <span class="font-medium">{{ Auth::user()->name ?? 'Account' }}</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500 group-open:rotate-180 transition" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15 6 9h12l-6 6Z"/></svg>
                     </summary>
-                    <div class="absolute right-0 mt-2 w-44 rounded-md border border-slate-200 bg-white shadow-lg">
-                        <a href="{{ route('dashboard') }}" class="block px-3 py-2 text-slate-700 hover:bg-slate-50">Dashboard</a>
+<div class="absolute right-0 mt-2 w-44 rounded-md border border-slate-200 bg-white shadow-lg">
+                        @if(in_array(Auth::user()->role ?? '', ['admin','manager']))
+                            <a href="{{ route('dashboard') }}" class="block px-3 py-2 text-slate-700 hover:bg-slate-50">Dashboard</a>
+                        @endif
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button class="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50">Logout</button>
@@ -56,8 +58,10 @@
                     <a href="{{ route('venues.index') }}" class="block px-3 py-2 rounded hover:bg-slate-50">Venues</a>
                     <a href="{{ route('events.index') }}" class="block px-3 py-2 rounded hover:bg-slate-50">Events</a>
                     <a href="{{ route('reservations.index') }}" class="block px-3 py-2 rounded hover:bg-slate-50">Reservations</a>
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-slate-50">Dashboard</a>
+@auth
+                        @if(in_array(Auth::user()->role ?? '', ['admin','manager']))
+                            <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded hover:bg-slate-50">Dashboard</a>
+                        @endif
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button class="w-full text-left px-3 py-2 rounded hover:bg-red-50 text-red-600">Logout</button>

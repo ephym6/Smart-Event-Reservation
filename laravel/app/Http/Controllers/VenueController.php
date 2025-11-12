@@ -45,6 +45,10 @@ class VenueController extends Controller
 
     public function store(Request $request)
     {
+        if (! auth()->check() || ! in_array(auth()->user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+
         $data = $request->validate([
             'venue_name' => 'required|string',
             'description' => 'nullable|string',
@@ -65,6 +69,9 @@ class VenueController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (! auth()->check() || ! in_array(auth()->user()->role, ['admin','manager'])) {
+            abort(403);
+        }
         $venue = Venue::findOrFail($id);
         $venue->update($request->all());
         
@@ -77,6 +84,9 @@ class VenueController extends Controller
 
     public function destroy($id)
     {
+        if (! auth()->check() || ! in_array(auth()->user()->role, ['admin','manager'])) {
+            abort(403);
+        }
         Venue::destroy($id);
         
         if (request()->wantsJson()) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -31,15 +32,34 @@ class ReservationController extends Controller
 
     public function store(Request $request)
     {
+        if (! Auth::check()) {
+            return redirect()->guest(route('login'));
+        }
+
         $data = $request->validate([
-            'user_id' => 'nullable|exists:users,user_id',
-            'venue_id' => 'nullable|exists:venues,venue_id',
+            'venue_id' => 'required|exists:venues,venue_id',
             'event_id' => 'nullable|exists:events,event_id',
-            'start_time' => 'nullable|date',
-            'end_time' => 'nullable|date',
-            'status' => 'in:pending,approved,cancelled,completed',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'status' => 'nullable|in:pending,approved,cancelled,completed',
             'total_cost' => 'nullable|numeric',
         ]);
+
+        // Prevent overlapping reservations for same venue (pending/approved)
+        $overlapExists = Reservation::where('venue_id', $data['venue_id'])
+            ->whereIn('status', ['pending', 'approved'])
+            ->where(function($q) use ($data) {
+                $q->where('start_time', '<=', $data['end_time'])
+                  ->where('end_time', '>=', $data['start_time']);
+            })
+            ->exists();
+
+        if ($overlapExists) {
+            return back()->withErrors(['venue_id' => 'This venue is already reserved for the selected time.'])->withInput();
+        }
+
+        $data['user_id'] = Auth::id();
+        $data['status'] = $data['status'] ?? 'pending';
 
         $reservation = Reservation::create($data);
         

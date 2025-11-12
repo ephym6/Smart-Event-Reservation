@@ -10,7 +10,7 @@
                 <input type="date" name="date" value="{{ $date ?? request('date') }}" class="rounded-md border border-slate-300 px-3 py-2 text-sm"/>
                 <button class="rounded-md bg-blue-600 px-3 py-2 text-white hover:bg-blue-700 text-sm" type="submit">Check date</button>
             </form>
-            @if (Route::has('venues.create'))
+            @if (auth()->check() && in_array(auth()->user()->role, ['admin','manager']) && Route::has('venues.create'))
                 <a href="{{ route('venues.create') }}" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">Add Venue</a>
             @endif
         </div>
