@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+use App\Models\Venue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class ReservationController extends Controller
 {
@@ -46,17 +48,35 @@ class ReservationController extends Controller
             'venue_id' => 'required|exists:venues,venue_id',
             'event_id' => 'nullable|exists:events,event_id',
             'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
+            'end_time' => 'nullable|date|after:start_time',
+            'duration_hours' => 'nullable|numeric|min:0.5|max:48',
             'status' => 'nullable|in:pending,approved,cancelled,completed',
-            'total_cost' => 'nullable|numeric',
+            // total_cost will be computed server-side
         ]);
+
+        // Require either end_time or duration
+        if (empty($data['end_time']) && empty($data['duration_hours'])) {
+            return back()->withErrors(['end_time' => 'Provide an end time or duration in hours.'])->withInput();
+        }
+
+        // If duration provided but no end_time, compute it
+        if (empty($data['end_time']) && !empty($data['duration_hours'])) {
+            $data['end_time'] = Carbon::parse($data['start_time'])->addMinutes((int) round($data['duration_hours'] * 60));
+        }
+
+        // Normalize to Carbon instances
+        $start = Carbon::parse($data['start_time']);
+        $end = Carbon::parse($data['end_time']);
+        if ($end->lessThanOrEqualTo($start)) {
+            return back()->withErrors(['end_time' => 'End time must be after start time.'])->withInput();
+        }
 
         // Prevent overlapping reservations for same venue (pending/approved)
         $overlapExists = Reservation::where('venue_id', $data['venue_id'])
             ->whereIn('status', ['pending', 'approved'])
-            ->where(function($q) use ($data) {
-                $q->where('start_time', '<=', $data['end_time'])
-                  ->where('end_time', '>=', $data['start_time']);
+            ->where(function($q) use ($start, $end) {
+                $q->where('start_time', '<=', $end)
+                  ->where('end_time', '>=', $start);
             })
             ->exists();
 
@@ -64,10 +84,25 @@ class ReservationController extends Controller
             return back()->withErrors(['venue_id' => 'This venue is already reserved for the selected time.'])->withInput();
         }
 
+        // Compute total cost from venue price_per_hour and duration
+        $venue = Venue::findOrFail($data['venue_id']);
+        $minutes = $start->diffInMinutes($end);
+        $hours = $minutes / 60.0;
+        $rate = (float) ($venue->price_per_hour ?? 0);
+        $data['total_cost'] = round($rate * $hours, 2);
+
         $data['user_id'] = Auth::id();
         $data['status'] = $data['status'] ?? 'pending';
 
-        $reservation = Reservation::create($data);
+        $reservation = Reservation::create([
+            'user_id' => $data['user_id'],
+            'venue_id' => $data['venue_id'],
+            'event_id' => $data['event_id'] ?? null,
+            'start_time' => $start,
+            'end_time' => $end,
+            'status' => $data['status'],
+            'total_cost' => $data['total_cost'],
+        ]);
         
         if (request()->wantsJson()) {
             return response()->json($reservation, 201);

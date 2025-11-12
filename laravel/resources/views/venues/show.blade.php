@@ -59,21 +59,22 @@
                                    class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
                         </div>
                         <div>
-                            <label for="end_time" class="block text-sm font-medium text-slate-700">End</label>
-                            <input id="end_time" name="end_time" type="datetime-local" required value="{{ old('end_time', request('date') ? request('date').'T12:00' : '') }}"
+                            <label for="end_time" class="block text-sm font-medium text-slate-700">End (or leave empty and set Duration)</label>
+                            <input id="end_time" name="end_time" type="datetime-local" value="{{ old('end_time', request('date') ? request('date').'T12:00' : '') }}"
                                    class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label for="guests" class="block text-sm font-medium text-slate-700">Guests</label>
-                            <input id="guests" name="guests" type="number" min="1" step="1" inputmode="numeric" value="{{ old('guests') }}"
+                            <label for="duration_hours" class="block text-sm font-medium text-slate-700">Duration (hours)</label>
+                            <input id="duration_hours" name="duration_hours" type="number" min="0.5" step="0.5" inputmode="decimal" value="{{ old('duration_hours') }}"
                                    class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
+                            <p class="mt-1 text-xs text-slate-500">Provide End or Duration.</p>
                         </div>
                         <div class="sm:col-span-2">
-                            <label for="total_cost" class="block text-sm font-medium text-slate-700">Estimated Total (KSh)</label>
-                            <input id="total_cost" name="total_cost" type="number" min="0" step="0.01" inputmode="decimal" value="{{ old('total_cost') }}"
+                            <label for="guests" class="block text-sm font-medium text-slate-700">Guests</label>
+                            <input id="guests" name="guests" type="number" min="1" step="1" inputmode="numeric" value="{{ old('guests') }}"
                                    class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
                         </div>
                     </div>
