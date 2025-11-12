@@ -78,6 +78,7 @@
                         <th class="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Start</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">End</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 bg-white">
@@ -94,10 +95,24 @@
                                     {{ ucfirst($r->status ?? 'pending') }}
                                 </span>
                             </td>
+                            <td class="px-3 py-2 text-sm text-right">
+                                @if(($r->status ?? 'pending') === 'pending')
+                                    <form action="{{ route('admin.reservations.approve', $r->reservation_id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button class="inline-flex items-center rounded-md bg-green-600 px-2 py-1 text-white hover:bg-green-700 text-xs">Approve</button>
+                                    </form>
+                                    <form action="{{ route('admin.reservations.decline', $r->reservation_id) }}" method="POST" class="inline ml-2">
+                                        @csrf
+                                        <button class="inline-flex items-center rounded-md bg-red-600 px-2 py-1 text-white hover:bg-red-700 text-xs">Decline</button>
+                                    </form>
+                                @else
+                                    <span class="text-slate-500">—</span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-3 py-4 text-center text-slate-500">No reservations yet.</td>
+                            <td colspan="7" class="px-3 py-4 text-center text-slate-500">No reservations yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -30,6 +30,17 @@
                        value="{{ old('email') }}"
                        class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"/>
             </div>
+
+            <div>
+                <label for="role" class="block text-sm font-medium text-slate-700">Account type</label>
+                <select id="role" name="role" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2">
+                    <option value="user" {{ old('role','user')==='user' ? 'selected' : '' }}>User</option>
+                    <option value="manager" {{ old('role')==='manager' ? 'selected' : '' }}>Manager</option>
+                    <option value="admin" {{ old('role')==='admin' ? 'selected' : '' }}>Admin</option>
+                </select>
+                <p class="mt-1 text-xs text-slate-500">Choose Admin/Manager for administrative access. You can change this later in the database.</p>
+            </div>
+
             <div>
                 <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
                 <input id="password" name="password" type="password" required autocomplete="new-password" minlength="8"

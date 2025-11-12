@@ -9,6 +9,7 @@ use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReservationItemController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 
 // Home page
@@ -94,7 +95,7 @@ Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('
 Route::get('/reservations/{id}/success', [ReservationController::class, 'success'])->name('reservations.success');
 
 // ---------------- DASHBOARD ----------------
-Route::view('/dashboard', 'dashboard')->name('dashboard');
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
 // ---------------- AUTH (USER) ----------------
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -106,3 +107,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ---------------- AUTH (ADMIN) ----------------
 Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login.post');
+
+// ---------------- ADMIN RESERVATION ACTIONS ----------------
+Route::post('/admin/reservations/{id}/approve', [ReservationController::class, 'approve'])->name('admin.reservations.approve');
+Route::post('/admin/reservations/{id}/decline', [ReservationController::class, 'decline'])->name('admin.reservations.decline');

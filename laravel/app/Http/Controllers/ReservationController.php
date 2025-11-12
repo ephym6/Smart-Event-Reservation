@@ -109,4 +109,34 @@ class ReservationController extends Controller
         
         return redirect()->route('reservations.index')->with('success', 'Reservation deleted successfully');
     }
+
+    public function approve($id)
+    {
+        if (! auth()->check() || ! in_array(auth()->user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+        $reservation = Reservation::findOrFail($id);
+        $reservation->status = 'approved';
+        $reservation->save();
+
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Reservation approved', 'reservation' => $reservation]);
+        }
+        return back()->with('success', 'Reservation approved');
+    }
+
+    public function decline($id)
+    {
+        if (! auth()->check() || ! in_array(auth()->user()->role, ['admin','manager'])) {
+            abort(403);
+        }
+        $reservation = Reservation::findOrFail($id);
+        $reservation->status = 'cancelled';
+        $reservation->save();
+
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'Reservation declined', 'reservation' => $reservation]);
+        }
+        return back()->with('success', 'Reservation declined');
+    }
 }

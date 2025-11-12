@@ -84,20 +84,24 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['nullable', 'in:user,admin,manager'],
         ]);
+
+        $role = $data['role'] ?? 'user';
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password_hash' => Hash::make($data['password']),
-            'role' => 'user',
+            'role' => $role,
             'is_verified' => true,
         ]);
 
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('home')->with('success', 'Welcome, '.$user->name.'!');
+        $redirect = in_array($role, ['admin','manager']) ? route('dashboard') : route('home');
+        return redirect($redirect)->with('success', 'Welcome, '.$user->name.'!');
     }
 
     public function adminLogin(Request $request)
