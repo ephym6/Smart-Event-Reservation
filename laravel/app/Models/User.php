@@ -35,4 +35,8 @@ class User extends Authenticatable
         'otp_expires' => 'datetime',
         'is_verified' => 'boolean',
     ];
+
+    public static function findOrFail($id)
+    {
+    }
 }
