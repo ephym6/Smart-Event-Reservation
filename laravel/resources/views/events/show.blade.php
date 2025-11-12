@@ -56,8 +56,9 @@
                         </div>
                         <div class="sm:col-span-2">
                             <label for="guests" class="block text-sm font-medium text-slate-700">Guests</label>
-                            <input id="guests" name="guests" type="number" min="1" step="1" inputmode="numeric" value="{{ old('guests') }}"
-                                   class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" />
+<input id="guests" name="guests" type="number" min="1" step="1" inputmode="numeric" value="{{ old('guests') }}" max="{{ (int)($event->venue->capacity ?? 0) ?: null }}" data-capacity="{{ (int)($event->venue->capacity ?? 0) }}"
+                                   class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2" placeholder="Max {{ (int)($event->venue->capacity ?? 0) ?: '—' }}" />
+                            <p id="guests-error" class="mt-1 text-xs text-red-600 hidden">Exceeds capacity (max {{ (int)($event->venue->capacity ?? 0) ?: '—' }})</p>
                         </div>
                     </div>
 
@@ -78,9 +79,12 @@
                     const startEl = document.getElementById('start_time');
                     const endEl = document.getElementById('end_time');
                     const durEl = document.getElementById('duration_hours');
-                    const estCost = document.getElementById('est-cost');
+const estCost = document.getElementById('est-cost');
                     const estDur = document.getElementById('est-duration');
                     const rate = parseFloat("{{ (float)($event->venue->price_per_hour ?? 0) }}");
+                    const guestsEl = document.getElementById('guests');
+                    const guestsErr = document.getElementById('guests-error');
+                    const cap = parseInt("{{ (int)($event->venue->capacity ?? 0) }}") || 0;
 
                     function toDate(v){ return v ? new Date(v) : null; }
                     function minsDiff(a,b){ return Math.max(0, Math.round((b - a) / 60000)); }
@@ -107,14 +111,26 @@
                         estCost.textContent = (hours && rate) ? ('KSh ' + (hours*rate).toFixed(2)) : 'KSh 0.00';
                     }
 
+                    function validateGuests(){
+                        if (!guestsEl || !cap) return;
+                        const val = parseInt(guestsEl.value || '0');
+                        const tooMany = val > cap;
+                        guestsEl.classList.toggle('border-red-500', tooMany);
+                        guestsEl.classList.toggle('ring-2', tooMany);
+                        guestsEl.classList.toggle('ring-red-300', tooMany);
+                        if (guestsErr) guestsErr.classList.toggle('hidden', !tooMany);
+                    }
+
                     ['change','input'].forEach(evt => {
                         startEl.addEventListener(evt, () => { updateMinConstraints(); compute(); });
                         endEl.addEventListener(evt, compute);
                         if (durEl) durEl.addEventListener(evt, compute);
+                        if (guestsEl) guestsEl.addEventListener(evt, validateGuests);
                     });
 
                     updateMinConstraints();
                     compute();
+                    validateGuests();
                 });
             </script>
             @endpush

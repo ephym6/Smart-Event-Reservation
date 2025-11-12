@@ -50,6 +50,7 @@ class ReservationController extends Controller
             'start_time' => 'required|date|after_or_equal:now',
             'end_time' => 'nullable|date|after:start_time',
             'duration_hours' => 'nullable|numeric|min:0.5|max:48',
+            'guests' => 'nullable|integer|min:1',
             'status' => 'nullable|in:pending,approved,cancelled,completed',
             // total_cost will be computed server-side
         ]);
@@ -86,6 +87,15 @@ class ReservationController extends Controller
 
         // Compute total cost from venue price_per_hour and duration
         $venue = Venue::findOrFail($data['venue_id']);
+
+        // Enforce guests <= capacity if provided
+        if (!empty($data['guests'])) {
+            $cap = (int) ($venue->capacity ?? 0);
+            if ($cap > 0 && (int)$data['guests'] > $cap) {
+                return back()->withErrors(['guests' => 'Guests exceed venue capacity (max '.$cap.').'])->withInput();
+            }
+        }
+
         $minutes = $start->diffInMinutes($end);
         $hours = $minutes / 60.0;
         $rate = (float) ($venue->price_per_hour ?? 0);
