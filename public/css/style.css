@@ -1,0 +1,31 @@
+/* Minimal site styles for Smart Event Reservation - development stylesheet */
+:root{
+  --accent:#ffb703;
+  --bg:#0b0f14;
+  --muted:#6b7280;
+  --card-bg:#fff;
+}
+*{box-sizing:border-box}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,'Helvetica Neue',Arial;line-height:1.4;background:#fafafa;color:#111}
+.container{max-width:1024px;margin:32px auto;padding:0 16px}
+h2{font-size:1.5rem;margin-bottom:8px}
+
+/* grid */
+.venue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:12px}
+.venue-card{background:var(--card-bg);border:1px solid #e6e6e6;border-radius:8px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+.venue-card h3{margin:0 0 6px 0;font-size:1.05rem}
+.venue-card p{margin:4px 0;color:var(--muted)}
+
+.btn{display:inline-block;background:var(--accent);color:#000;padding:8px 12px;border-radius:6px;text-decoration:none;font-weight:600}
+
+form label{display:block;font-size:0.85rem;margin:10px 0 6px}
+input[type="datetime-local"], input[type="text"], input[type="date"], input[type="number"], select{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+
+.msg-error{background:#ffe9e9;border:1px solid #ffbdbd;color:#9b1c1c;padding:8px;border-radius:6px}
+.msg-success{background:#e6ffea;border:1px solid #9ff0b9;color:#0b6d2f;padding:8px;border-radius:6px}
+
+/* small helpers */
+.text-muted{color:var(--muted)}
+a{color:var(--accent)}
+
+@media (max-width:640px){.container{margin:16px auto}}

@@ -1,0 +1,132 @@
+<?php
+require_once __DIR__ . '/../classes/Auth.php';
+require_once __DIR__ . '/../classes/Venue.php';
+require_once __DIR__ . '/../classes/Reservation.php';
+
+$auth = new Auth();
+$auth->requireAuth('login.php');
+
+$venueModel = new Venue();
+$venues = $venueModel->getAll();
+
+$errors = [];
+$success = null;
+$user = $auth->currentUser();
+
+// Preselected venue via GET
+$preselect_venue_id = isset($_GET['venue_id']) ? intval($_GET['venue_id']) : 0;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $venue_id = intval($_POST['venue_id'] ?? 0);
+    $start = trim($_POST['start_time'] ?? '');
+    $end = trim($_POST['end_time'] ?? '');
+
+    if (!$venue_id || !$start || !$end) $errors[] = 'All fields are required.';
+
+    // Validate date/time format
+    if (strtotime($start) === false || strtotime($end) === false) {
+        $errors[] = 'Invalid dates.';
+    } else {
+        // Prevent booking past dates
+        $currentDateTime = date('Y-m-d H:i');
+        if ($start < $currentDateTime) {
+            echo "<script>alert('You cannot book a past date or time.'); window.history.back();</script>";
+            exit;
+        }
+    }
+
+    // basic validation: start < end
+    if (empty($errors) && strtotime($start) >= strtotime($end)) $errors[] = 'Start must be before end.';
+
+    // calculate hours and cost
+    if (empty($errors)) {
+        $venue = $venueModel->getById($venue_id);
+        if (!$venue) $errors[] = 'Venue not found.';
+        else {
+            $hours = (strtotime($end) - strtotime($start)) / 3600;
+            if ($hours <= 0) $errors[] = 'Duration must be positive.';
+            else {
+                $total = floatval($venue['price_per_hour']) * $hours;
+                $resModel = new Reservation();
+                try {
+                    $ok = $resModel->create($user['user_id'], $venue_id, $start, $end, $total);
+                    if ($ok) {
+                        $success = 'Reservation created. Total cost: Ksh.' . number_format($total, 2);
+                    } else {
+                        $errors[] = 'Failed to create reservation.';
+                    }
+                } catch (PDOException $e) {
+                    $errMsg = $e->getMessage();
+                    if (stripos($errMsg, 'overlaps') !== false || $e->getCode() === '45000') {
+                        $errors[] = 'The selected time overlaps with an existing booking for this venue.';
+                    } else {
+                        error_log('Reservation create error: ' . $e->getMessage());
+                        $errors[] = 'Failed to create reservation due to a server error.';
+                    }
+                } catch (Exception $e) {
+                    error_log('Reservation create unexpected error: ' . $e->getMessage());
+                    $errors[] = 'Failed to create reservation due to a server error.';
+                }
+            }
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserve Venue - Smart Event Reservation</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="reserve-page">
+<div class="container">
+  <h2>Reserve a Venue</h2>
+
+  <?php if ($errors): ?>
+    <div class="msg-error"><?php foreach($errors as $e) echo '<div>' . htmlspecialchars($e) . '</div>'; ?></div>
+  <?php endif; ?>
+  <?php if ($success): ?>
+    <div class="msg-success"><?= htmlspecialchars($success) ?></div>
+  <?php endif; ?>
+
+  <form method="POST">
+    <label>Venue</label>
+    <select name="venue_id" required>
+      <option style="color: #ffb703; background-color: black" value="">-- choose --</option>
+      <?php 
+        $selectedValue = $_POST['venue_id'] ?? $preselect_venue_id;
+        foreach($venues as $v): 
+          $sel = ($selectedValue && intval($selectedValue) === intval($v['venue_id'])) ? 'selected' : '';
+      ?>
+        <option style="color: #ffb703; background-color: black" value="<?= $v['venue_id'] ?>" <?= $sel ?>>
+          <?= htmlspecialchars($v['venue_name']) ?> (<?= htmlspecialchars($v['location']) ?>) - Ksh.<?= number_format($v['price_per_hour'], 2) ?>/hr
+        </option>
+      <?php endforeach; ?>
+    </select>
+
+    <label>Start</label>
+    <input type="datetime-local" name="start_time" id="start_time" min="<?= date('Y-m-d\TH:i') ?>" value="<?= htmlspecialchars($_POST['start_time'] ?? '') ?>" required>
+
+    <label>End</label>
+    <input type="datetime-local" name="end_time" id="end_time" min="<?= date('Y-m-d\TH:i') ?>" value="<?= htmlspecialchars($_POST['end_time'] ?? '') ?>" required>
+
+    <button class="btn" type="submit">Reserve</button>
+  </form>
+
+  <p style="margin-top:12px;"><a href="dashboard.php" style="color:#ffb703;">Back to dashboard</a></p>
+</div>
+
+<script>
+  document.getElementById('start_time').addEventListener('change', function() {
+    const selected = new Date(this.value);
+    const now = new Date();
+    if (selected < now) {
+      alert('You cannot select a past start time.');
+      this.value = '';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -35,4 +35,14 @@ class User extends Authenticatable
         'otp_expires' => 'datetime',
         'is_verified' => 'boolean',
     ];
+
+    /**
+     * Get the password field for authentication.
+     * Laravel's Auth::attempt() looks for $user->getAuthPassword()
+     * Our DB stores the password hash in 'password_hash', not the Laravel default 'password'
+     */
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
 }
